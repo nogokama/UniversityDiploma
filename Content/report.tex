@@ -1,0 +1,119 @@
+% Это основная команда, с которой начинается любой \LaTeX-файл. Она отвечает за тип документа, с которым связаны основные правил оформления текста.
+\documentclass[a4paper,12pt]{extarticle}
+
+\usepackage{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{fancyhdr}
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{tikz}
+\usepackage{pgf}
+\usepackage{subcaption}
+\usepackage{indentfirst}
+\usepackage[
+backend=biber,
+style=numeric,
+maxbibnames=99
+]{biblatex}
+\addbibresource{Bibliography/sources.bib}
+\usepackage{indentfirst}
+\usepackage{mathtools}
+\usepackage{booktabs}
+\usepackage[flushleft]{threeparttable}
+\usepackage{tablefootnote}
+\usepackage{microtype}
+\pretolerance=1000 % Adjust the threshold for line breaking
+
+
+\usepackage{chngcntr} % нумерация графиков и таблиц по секциям
+\counterwithin{table}{section}
+\counterwithin{figure}{section}
+
+\graphicspath{{graphics/}}%путь к рисункам
+
+\makeatletter
+% \renewcommand{\@biblabel}[1]{#1.} % Заменяем библиографию с квадратных скобок на точку:
+\makeatother
+
+\geometry{left=2.5cm}% левое поле
+\geometry{right=1.0cm}% правое поле
+\geometry{top=2.0cm}% верхнее поле
+\geometry{bottom=2.0cm}% нижнее поле
+
+\setlength{\parindent}{1.25cm}
+\renewcommand{\baselinestretch}{1.5} % междустрочный интервал
+\setlength{\footnotesep}{0.9\baselineskip}
+
+
+% Пакеты для отображения картинок
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{wrapfig}
+
+\usepackage[breaklinks, unicode=true, colorlinks=true, linkcolor=blue, urlcolor=blue,citecolor=blue]{hyperref}
+\usepackage{xurl}
+
+\usepackage{setspace}
+% \renewcommand{\theenumi}{\arabic{enumi}}% Меняем везде перечисления на цифра.цифра
+% \renewcommand{\labelenumi}{\arabic{enumi}}% Меняем везде перечисления на цифра.цифра
+% \renewcommand{\theenumii}{.\arabic{enumii}}% Меняем везде перечисления на цифра.цифра
+% \renewcommand{\labelenumii}{\arabic{enumi}.\arabic{enumii}.}% Меняем везде перечисления на цифра.цифра
+% \renewcommand{\theenumiii}{.\arabic{enumiii}}% Меняем везде перечисления на цифра.цифра
+% \renewcommand{\labelenumiii}{\arabic{enumi}.\arabic{enumii}.\arabic{enumiii}.}% Меняем везде перечисления на цифра.цифра
+
+\setcounter{biburllcpenalty}{7000}
+\setcounter{biburlucpenalty}{8000}
+
+% \addbibresource{Bibliography/sources.bib}
+
+\setlength{\parskip}{6pt}
+\setlength{\parindent}{10pt}
+
+\usepackage{pdfpages}
+
+\input{Parts/rustcode.tex}
+
+\newcommand{\thisdate}{17.05.2023}
+
+
+% С этого момента начинается текст документа
+\begin{document}
+
+% Эта команда создает титульную страницу
+
+% \makeTitlePage
+
+\input{Parts/title.tex}
+
+% \newpage
+
+\setcounter{page}{2}
+{
+\hypersetup{linkcolor=black}
+% Здесь будет автоматически генерироваться содержание документа
+\tableofcontents
+}
+
+\newpage
+\input{Parts/plan}
+
+
+\newpage
+\addcontentsline{toc}{section}{Список источников}
+
+\Urlmuskip=0mu plus 1mu\relax
+
+\printbibliography
+
+% \addcontentsline{toc}{section}{Список иллюстраций}
+% \listoffigures
+
+
+\end{document}
+% Начиная с этого момента весь текст LaTeX игнорирует, можете вставлять любую абракадабру.
