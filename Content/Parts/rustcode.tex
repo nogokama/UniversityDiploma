@@ -51,6 +51,18 @@
   }
 }{}
 
+\lstnewenvironment{jsoncode}[1][]{
+  \lstset{
+    basicstyle=\ttfamily,
+    keywordstyle=\color{blue},
+    stringstyle=\color{blue},
+    commentstyle=\color{gray},
+    showstringspaces=false,
+    breaklines=true,
+    % frame=single,
+    #1
+  }
+}{}
 
 \lstnewenvironment{cppcode}[1][]{
   \lstset{

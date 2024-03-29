@@ -1,0 +1,286 @@
+% Это основная команда, с которой начинается любой \LaTeX-файл. Она отвечает за тип документа, с которым связаны основные правил оформления текста.
+\documentclass[a4paper,10pt]{article}
+
+% \usepackage{times} % For Times Roman font
+% \usepackage{helvet} % For Helvetica font
+
+\usepackage{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{fancyhdr}
+\usepackage{setspace}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{lipsum}
+\usepackage{tikz}
+\usepackage{titlesec}
+% \usepackage{sectsty}
+\usepackage{pgf}
+\usepackage{subcaption}
+\usepackage{indentfirst}
+\usepackage[
+style=ieee,
+backend=biber,
+maxbibnames=99
+]{biblatex}
+\addbibresource{Bibliography/sources.bib}
+\usepackage{indentfirst}
+\usepackage{mathtools}
+\usepackage{booktabs}
+\usepackage[flushleft]{threeparttable}
+\usepackage{tablefootnote}
+\usepackage{microtype}
+\pretolerance=1000 % Adjust the threshold for line breaking
+
+
+\usepackage{chngcntr} % нумерация графиков и таблиц по секциям
+\counterwithin{table}{section}
+\counterwithin{figure}{section}
+
+\graphicspath{{graphics/}}%путь к рисункам
+
+\makeatletter
+% \renewcommand{\@biblabel}[1]{#1.} % Заменяем библиографию с квадратных скобок на точку:
+\makeatother
+
+\geometry{left=1.5cm}% левое поле
+\geometry{right=1.5cm}% правое поле
+\geometry{top=2.0cm}% верхнее поле
+\geometry{bottom=1.5cm}% нижнее поле
+
+\setlength{\parindent}{1.25cm}
+% \renewcommand{\baselinestretch}{1.1} % междустрочный интервал
+\setlength{\footnotesep}{0.9\baselineskip}
+
+\usepackage{mathptmx}
+
+% Пакеты для отображения картинок
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{wrapfig}
+
+\usepackage[breaklinks, hidelinks, unicode=true, colorlinks=false,citecolor=black]{hyperref}
+\usepackage{xurl}
+
+\usepackage{setspace}
+% \renewcommand{\theenumi}{\arabic{enumi}}% Меняем везде перечисления на цифра.цифра
+% \renewcommand{\labelenumi}{\arabic{enumi}}% Меняем везде перечисления на цифра.цифра
+% \renewcommand{\theenumii}{.\arabic{enumii}}% Меняем везде перечисления на цифра.цифра
+% \renewcommand{\labelenumii}{\arabic{enumi}.\arabic{enumii}.}% Меняем везде перечисления на цифра.цифра
+% \renewcommand{\theenumiii}{.\arabic{enumiii}}% Меняем везде перечисления на цифра.цифра
+% \renewcommand{\labelenumiii}{\arabic{enumi}.\arabic{enumii}.\arabic{enumiii}.}% Меняем везде перечисления на цифра.цифра
+
+\setcounter{biburllcpenalty}{7000}
+\setcounter{biburlucpenalty}{8000}
+
+% \addbibresource{Bibliography/sources.bib}
+
+\setlength{\parskip}{2pt}
+\setlength{\parindent}{10pt}
+
+\usepackage{pdfpages}
+
+\input{Parts/rustcode.tex}
+
+\newcommand{\thisdate}{17.05.2023}
+
+\renewcommand\thesection{\Roman{section}}
+\renewcommand\thesubsection{\Alph{subsection}}
+
+\titleformat{\section}[block]{\footnotesize\fontfamily{ptm}\selectfont\centering}{\normalsize \thesection.}{0.2em}{\centering\textls[90]}
+
+\titleformat{\subsection}[block]{\itshape}{\normalsize \thesubsection.}{0.2em}{}
+
+\pagestyle{empty}
+
+
+\defbibheading{bibliography}[]{}
+
+\renewcommand{\thefigure}{\arabic{figure}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\begin{document}
+
+
+\begin{center}
+    {
+        \huge 
+        % \textbf{
+            Development Of Compute Cluster Simulator
+            % }
+    }
+    \\[0.5cm]
+    { \large
+        Artem Makogon \\
+        % \vspace{-2pt}
+\textit{Faculty of Computer Science} \\ 
+        % \vspace{-2pt}
+\textit{National Research University Higher School of Economics} \\ 
+        % \vspace{-2pt}
+Moscow, Russia \\
+        % \vspace{-2pt}
+aamakogon@edu.hse.ru
+    }
+\end{center}
+
+\vspace{0.5cm}
+
+
+\setlength{\columnsep}{15pt}
+
+\begin{multicols*}{2}
+    
+\textbf{\textit{Abstract}---Algorithms for scheduling tasks on compute clusters are the subject of active research. It is quite expensive to conduct such studies, so simulators are used to compare different hypotheses. The quality of the results obtained largely depends on the accuracy of the model used. Most modern simulators use simple compute models, which are not always enough. Our work is focused on developing a simulator of a compute cluster based on the DSLab framework, which will allow very accurate and flexible modeling of computational load scenarios using asynchronous programming primitives. DSLab provides a lot of opportunities both for writing new algorithms and using ready-made modules of various distributed system components. Thus, the new simulator will receive the basic advantages of DSLab, which will make it even more attractive for researchers of complex algorithms.}
+
+\textbf{\textit{Keywords}---distributed systems, compute cluster, scheduling algorithms, simulations, DSLab }
+
+
+\section{{\normalsize I}NTRODUCTION}
+
+Compute clusters consisting of a set of servers with various resources (processor, memory, disk) are widely used for complex calculations and processing large amounts of data in science and business. On a large industrial cluster, thousands of batch jobs from different users can be running simultaneously, and some jobs may be in a queue waiting for resources to be allocated. The cluster manager or scheduler manages the launch of tasks and the allocation of resources between them. The cluster manager's work is based on job scheduling algorithms, the main purpose of which is to maximize the efficient use of cluster resources. These algorithms are the subject of active research. It is long and expensive to conduct such studies on a real cluster, so a computer model (simulator) is needed to quickly test a hypothesis or conduct comparative testing of different algorithms on some cluster load history. An important feature of such simulators is the ability to flexibly adjust the cluster load model in order to get the most realistic results. Such a simulator can also be used in the educational process to familiarize students with such systems and the tasks arising in them. 
+
+In research and development environments, simulators offer a cost-effective way of evaluating new scheduling algorithms and strategies before deploying them in production clusters. Researchers can test various workload scenarios, fine-tune parameters, and assess algorithmic performance under different conditions. This iterative process enables researchers to refine their algorithms and identify optimal configurations for specific use cases.
+
+The new simulator will be developed based on DSLab\cite{dslab-repo}, which is one of the most advanced simulators\cite{dslab-architecture}\cite{dslab-analog-cmp}. There are already developed models of processors, disks and network that can be used as the basis of a new simulator.
+
+\section{{\normalsize L}ITERATURE {\normalsize R}EVIEW}
+
+\subsection{Workload Model}
+
+In order to simulate cluster workload and test scheduling algorithms, the workload model is required. The standard workload format (SWF)\cite{standard-workload-format} is widely used in the literature and is supported by many simulators. The SWF provides quite a few information about workload. The key information about single workload unit <<Job>> includes arrival time, execution time, priority and resource requirement. The only assumption we can make about the workload is that job consumes all the given resources during the execution time. Most popular workload traces are provided in similar format (for example Google trace\cite{google-clusterdata}).  
+
+Another approach to workload modeling is based on more complex simulation, where job time is calculated based on workload structure and available resources. The main advantage of this way of simulating workload is that all the details of the job execution can be taken into account and used while scheduling. Also, the cluster utilization can be calculated with more precision. The main disadvantage is that it is quite difficult to find open-source data for such simulations because job details are usually confidential and never published. 
+
+\subsection{Simulators}
+
+Numerous simulators to evaluate cluster scheduling algorithms were developed in
+previous work, and most of them fall into one of the two following categories: (1) simulators built from scratch, and (2) simulators based on platform simulation framework. Another way of grouping simulators is by the workload type they support: (1) simulators that support workload traces in the SWF or similar formats, and (2) simulators that support complex workload description.
+
+
+Simulators built from scratch are usually designed for one purpose and can hardly be applied in different scenarios. The representative example of such simulator is AccaSim\cite{accasim-article}. It is based on discrete event modeling and contains some pre-defined resource managers and scheduling policies. It is quite easy to use, but does not support complex configurations. In contrast to AccaSim, our simulator will be able to simulate arbitrary workload scenarios, that will be defined by users. In addition to this, our simulator is modular as it is based on DSLab. Users will be able to connect modules written by other researchers within the DSLab framework and use them in their experiments. For example, DSLab provides shared network models, that can simulate the variety of network topologies. 
+
+Simulators based on platform simulation framework are much more flexible. The most popular framework is SimGrid\cite{simgrid-article}. The detailed comparison between SimGrid and DSLab can be found in the DSLab documentation\cite{dslab-analog-cmp}.
+
+
+The batch-system simulator Batsim\cite{batsim-article} is based on SimGrid and allows developers to integrate algorithms in several languages based on inter-process communication. Batsim provides the interface to configure custom workload types and scenarios, but they are limited by several given options and possible sequential combinations of them. Our simulator will extend this approach for the arbitrary workload definition using asynchronous programming primitives. In addition to this we will aim to achieve higher performance, because our simulator will be implemented as Rust crate and native Rust integration is supposed to be faster than inter-process communication.
+
+The Elastisim\cite{elastisim-article} simulator is also based on SimGrid and focused on malleable workloads. It allows to simulate the dynamic changes in the number of resources allocated to a job. The key feature of Elastisim is high precision of the simulated deep learning workload, which it is designed for. In addition to compute simulation Elastisim is also focused on providing simulation for I/O operations. Authors pay special attention to the fact that I/O may become a bottleneck as the amount of transferred data is constantly increasing. The structure of Elastisim job is quite complicated. Execution consists of several phases and can be configured using JSON file by combining the pre-defined set of operations: cpu, gpu, I/O and disk operations. This is the most advanced workload simulator of all the reviewed sources. We will aim to provide even more opportunities for detailed workloads description.
+
+\section{{\normalsize M}ETHODS}
+
+\subsection{DSLab}
+
+DSLab is a software framework for simulation and testing of distributed systems. The framework is organized as a set of loosely coupled software modules with an API. This approach allows users of the framework (researchers, developers, teachers) to flexibly assemble solutions from modules for their own purposes. The framework is written in Rust, which provides high performance and safety. 
+
+\subsection{Compute Cluster Model}
+
+As a basis for the cluster model, we will use the existing models of processors, disks and network from DSLab. The cluster contains the set of nodes (or servers), which are connected by a network. The cluster scheduler is responsible for placing workload units (jobs) on the nodes. Jobs can take either a fixed amount of resources or a variable amount within a certain range. 
+
+\subsection{Simulator Architecture}
+
+The simulator will be able to accept a variety of different inputs, such as SWF, Google Trace or more complex workload scenarios (described in the next section). The architecture of the simulator is shown in the Figure \ref{fig:cluster-design}: 
+    
+
+\begin{figure}[H]
+   \includegraphics[width=\linewidth]{images/cluster-design} 
+   \caption{Simulator architecture}
+   \label{fig:cluster-design}
+\end{figure}
+
+
+The workload generator is responsible for parsing the input data and pass it to a \texttt{Proxy}. 
+The \texttt{Scheduler} component is responsible for placing jobs on the servers. It is implemented by the user.
+The cluster component is responsible for simulating the behavior of servers and network. 
+
+By combining the information gathered on \texttt{Proxy} and \texttt{Cluster} components, the simulator will be able to provide a detailed report on the cluster load and the execution of jobs. This report can be used to evaluate the performance of the scheduling algorithms. For example, the following metrics can be calculated: the average time of job execution, the average time of job waiting in the queue, the average cluster utilization, etc.
+
+
+\subsection{Asynchronous events control}
+
+DSLab is based on discrete event simulation, which is a well-known approach to modeling distributed systems. Furthermore, DSLab provides a core feature to manage events asynchronously\cite{async-dslab} using Rust async primitives, thereby making possible to write expressive code within the simulation. This feature is about to get released as stable, so new simulator will rely on it. 
+
+The user will be able to write a task using Rust code, which will consist of several asynchronous operations. For example, the following code snippet demonstrates how to write a task that consists of sequential asynchronous operations:
+
+\begin{figure}[H]
+    \small
+\vspace{-0.4cm}    
+\begin{rustcode}
+async fn run(&self, args: JobArgs) {    
+    self.download_data(&args).await;
+    self.read_data(&args).await;
+    self.run_task(&args).await;
+    self.write_data(&args).await;
+    self.upload_result(&args).await;
+}
+\end{rustcode}
+\vspace{-0.6cm}
+\caption{Example of sequential tasks execution}
+\end{figure}
+
+On contrast with the existing simulators, where the workload is described using JSON, DSLab simulator will allow using combiners from the \texttt{futures} crate\cite{rust-futures}. The following code snippet demonstrates how to write a task that consists of parallel asynchronous operations:
+
+\begin{figure}[H]
+    \small
+\vspace{-0.4cm}    
+\begin{rustcode}
+async fn run(&self, args: JobArgs) {    
+    futures::join!(
+        self.download_data(args.node_1),
+        self.download_data(args.node_2),       
+    )
+}
+\end{rustcode}
+\vspace{-0.6cm}
+\caption{Example of parallel tasks execution}
+\end{figure}
+
+The combination of given methods will allow to simulate complex workloads, which are not supported by the existing simulators. This will be achieved by implementing Rust trait (code snippet \ref{rust-job-trait}) separately for different types of Jobs. 
+
+\begin{figure}[H]
+    \small
+\vspace{-0.4cm}    
+\begin{rustcode}
+pub trait Job {
+    async fn run(self: Box<Self>, job_context: JobContext);
+}
+\end{rustcode}
+\vspace{-0.6cm}
+\caption{Job trait description}
+\label{rust-job-trait}
+\end{figure}
+
+In this case \texttt{JobContext} will contain all the necessary functions to interact with cluster and other assigned nodes for the jobs (in order to exchange data or to perform some operations). The semantics and the structure of the \texttt{JobContext} will be refined during the development of the simulator.
+
+\section{{\normalsize E}XPECTED {\normalsize R}ESULTS}
+
+The main result of the work will be a high-performance simulator that will allow to configure arbitrary workload scenarios and evaluate the performance of scheduling algorithms. Users will be able to choose between several approaches for describing cluster and workloads: SWF, Google Trace or custom workload scenarios. 
+
+Due to its flexibility, the new simulator can be customized individually for an existing cluster and will allow researchers to have high confidence in the results obtained in the simulation.
+
+\section{{\normalsize C}ONCLUSION}
+
+Since the number of calculations performed on clusters is continuously increasing, special attention is paid to the effectiveness of planning algorithms. The potential improvement of cluster utilization by units of percent will save huge amounts of money. The development of a simulator for compute clusters is an important task, as it allows to test the performance of scheduling algorithms without the need to use a real cluster. 
+
+\Urlmuskip=0mu plus 1mu\relax
+
+\section*{{\normalsize R}EFERENCES}
+\printbibliography
+
+\begin{flushright}
+    Word Count: 1715
+\end{flushright}
+
+\end{multicols*}
+% \addcontentsline{toc}{section}{Список иллюстраций}
+% \listoffigures
+
+
+\end{document}
+% Начиная с этого момента весь текст LaTeX игнорирует, можете вставлять любую абракадабру.
