@@ -12,6 +12,7 @@ function latex_build {
 names=(
     "report"
     "presentation"
+    "project_proposal"
 )
 
 for ((i = 0; i < ${#names[@]}; i+= 1)) do
