@@ -6,7 +6,7 @@
     break, continue, else, for, if, loop, match, return, while, struct
   },
   morekeywords=[2]{
-    crate, fn, async, mod, pub, use, self, Self, struct, enum, const, static, let, mut, ref, type, impl, trait, where, as, dyn, move,
+    crate, fn, async, mod, pub, use, self, Self, struct, enum, const, static, let, mut, ref, type, impl, trait, where, as, dyn, move, select, join
   },
   morekeywords=[3]{
     bool, char, i8, i16, i32, i64, isize, u8, u16, u32, u64, usize, f32, f64, str, String,
@@ -35,6 +35,8 @@
   breaklines=true,
   frame=none,
 }
+
+
 
 
 \lstnewenvironment{rustcode}[1][]{
@@ -73,6 +75,35 @@
     commentstyle=\color{gray},
     showstringspaces=false,
     breaklines=true,
+    % frame=single,
+    #1
+  }
+}{}
+
+
+\lstdefinelanguage{YAML}{
+    keywords={true,false,null,y,n},
+    keywordstyle=\color{blue}\bfseries,
+    ndkeywords={},
+    ndkeywordstyle=\color{black}\bfseries,
+    sensitive=false,
+    comment=[l]{\#},
+    morecomment=[s]{/*}{*/},
+    commentstyle=\color{purple}\ttfamily,
+    stringstyle=\color{red}\ttfamily,
+    morestring=[b]',
+    morestring=[b]",
+    literate =
+        {---}{{\ProcessThreeDashes}}3
+        {>}{{\textcolor{red}\textgreater}}1     
+        {|}{{\textcolor{red}\textbar}}1 
+        {\ -\ }{{\mdseries\ -\ }}3,
+}
+
+\lstnewenvironment{yamlcode}[1][]{
+  \lstset{
+    language=YAML,
+    basicstyle=\ttfamily,
     % frame=single,
     #1
   }
