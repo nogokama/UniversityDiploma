@@ -151,7 +151,20 @@
   url   = {https://osukhoroslov.github.io/dslab/docs/dslab_storage/index.html}
 }
 
+@misc{batsim-profile-types-overview,
+  title = {BatSim profile types overview},
+  url   = {https://batsim.readthedocs.io/en/latest/input-workload.html#profile-types-overview}
+}
 
+@misc{yt-scheduler,
+  title = {Устройство планировщика Yandex YT. Запись с конференции \texttt{HighLoad}},
+  url   = {https://www.youtube.com/watch?v=Uv-IcGZSRpk&ab_channel=HighLoadChannel}
+}
+
+@misc{slurm-cpu-management,
+  title = {Slurm CPU Management User and Administrator Guide},
+  url   = {https://slurm.schedmd.com/cpu_management.html}
+}
 
 
 @techreport{google-clusterdata,
@@ -168,6 +181,44 @@
                  schema of usage traces of a few Google compute cells.
                  This document describes version 3 of the trace format.}
 }
+
+@techreport{alibaba-clusterdata,
+  title = {{Alibaba} cluster-trace-v2018},
+  year  = 2018,
+  type  = {Technical Report},
+  note  = {Posted at \url{https://github.com/alibaba/clusterdata/blob/master/cluster-trace-v2018/trace_2018.md}}
+}
+
+@inproceedings{drf-article,
+  title     = {Dominant Resource Fairness: Fair Allocation of Multiple Resource Types},
+  author    = {Ali Ghodsi and Matei A. Zaharia and Benjamin Hindman and Andy Konwinski and Scott Shenker and Ion Stoica},
+  booktitle = {Symposium on Networked Systems Design and Implementation},
+  year      = {2011},
+  url       = {https://api.semanticscholar.org/CorpusID:6693615}
+}
+
+
+@article{tetris-article,
+  author     = {Grandl, Robert and Ananthanarayanan, Ganesh and Kandula, Srikanth and Rao, Sriram and Akella, Aditya},
+  title      = {Multi-resource packing for cluster schedulers},
+  year       = {2014},
+  issue_date = {October 2014},
+  publisher  = {Association for Computing Machinery},
+  address    = {New York, NY, USA},
+  volume     = {44},
+  number     = {4},
+  issn       = {0146-4833},
+  url        = {https://doi.org/10.1145/2740070.2626334},
+  doi        = {10.1145/2740070.2626334},
+  abstract   = {Tasks in modern data parallel clusters have highly diverse resource requirements, along CPU, memory, disk and network. Any of these resources may become bottlenecks and hence, the likelihood of wasting resources due to fragmentation is now larger. Today's schedulers do not explicitly reduce fragmentation. Worse, since they only allocate cores and memory, the resources that they ignore (disk and network) can be over-allocated leading to interference, failures and hogging of cores or memory that could have been used by other tasks. We present Tetris, a cluster scheduler that packs, i.e., matches multi-resource task requirements with resource availabilities of machines so as to increase cluster efficiency (makespan). Further, Tetris uses an analog of shortest-running-time-first to trade-off cluster efficiency for speeding up individual jobs. Tetris' packing heuristics seamlessly work alongside a large class of fairness policies. Trace-driven simulations and deployment of our prototype on a 250 node cluster shows median gains of 30\% in job completion time while achieving nearly perfect fairness.},
+  journal    = {SIGCOMM Comput. Commun. Rev.},
+  month      = {aug},
+  pages      = {455–466},
+  numpages   = {12},
+  keywords   = {packing, multi-dimensional, makespan, fairness, completion time, cluster schedulers}
+}
+
+
 
 @article{simgrid-article,
   title       = {{Versatile, Scalable, and Accurate Simulation of Distributed Applications and Platforms}},
@@ -246,4 +297,24 @@
   pages     = {196-205},
   keywords  = {Energy consumption;Power demand;Multicore processing;Computational modeling;High performance computing;Memory management;Reinforcement learning;Resource Management;Reinforced Learning;Scheduling Simulation;Heterogeneous Systems},
   doi       = {10.1109/CCGrid51090.2021.00029}
+}
+
+@inproceedings{fat-tree-networks-article,
+  author    = {Petrini, F. and Vanneschi, M.},
+  booktitle = {Proceedings 11th International Parallel Processing Symposium},
+  title     = {k-ary n-trees: high performance networks for massively parallel architectures},
+  year      = {1997},
+  volume    = {},
+  number    = {},
+  pages     = {87-93},
+  keywords  = {Communication system traffic control;Parallel architectures;Multiprocessor interconnection networks;Switches;Communication switching;Network topology;Analytical models;Algorithm design and analysis;Adaptive algorithm;Routing},
+  doi       = {10.1109/IPPS.1997.580853}
+}
+
+@inproceedings{borg-next-gen,
+  title     = {Borg: the Next Generation},
+  author    = {Muhammad Tirmazi and Adam Barker and Nan Deng and Md Ehtesam Haque and Zhijing Gene Qin and Steven Hand and Mor Harchol-Balter and John Wilkes},
+  year      = {2020},
+  booktitle = {EuroSys'20},
+  address   = {Heraklion, Crete}
 }
