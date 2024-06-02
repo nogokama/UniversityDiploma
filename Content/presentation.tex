@@ -73,6 +73,7 @@
 \usetikzlibrary{fadings}
 \usepackage[outline]{contour}
 \usepackage{pifont} 
+\usepackage{adjustbox}
 
 \usepackage{chngcntr} % нумерация графиков и таблиц по секциям
 \counterwithin{table}{section}
@@ -84,8 +85,8 @@
 
 
 
-\title{Development of Compute Cluster Simulator}
-\author[Artem Makogon]{\footnotesize Author: Artem Makogon \\[5pt]   Supervisor: Oleg Sukhoroslov}
+\title{Разработка симулятора вычислительного кластера}
+\author[Артём Макогон]{\footnotesize Выполнил: Макогон Артём Аркадьевич, БПМИ206 \\[5pt]   Руководитель: Сухорослов Олег Викторович, к.т.н, доцент НИУ ВШЭ}
 \date{\today}
 % \institute[Высшая школа экономики]{National Research University\\ 
 	% <<Higher School of Economics>>}
@@ -98,35 +99,102 @@
 		\maketitle
 	\end{frame}
 	
-    \section{Introduction}
-    \subsection{Testing of cluster scheduling algorithms}
+    \section{Введение}
+    \subsection{Описание предметной области}
 
 	\begin{frame}[fragile]
 		\frametitle{\insertsection} 
 		\framesubtitle{\insertsubsection}
 				\vspace{0.5cm}
 				\begin{itemize}
-					\item Compute clusters are widely used for complex calculations.
-					\item Scheduling algorithms are crucial for their performance.
-					\item These algorithms are the subject of active research.
+					\item Вычислительные кластеры активно используются в исследованиях и компаниях.
+					\item От качества алгоритма планирования задач зависит эффективность использования ресурсов.
+					\item Такие алгоритмы являются предметом активных исследований.
 				\end{itemize}
 				\alt<2->{
 					{ \hspace{5cm} \large $\Downarrow$ } 
 					\begin{itemize}
-						\item[\small\textgreater] Researches need a tool for testing their hypotheses.
-						\item[\small\textgreater] Using real clusters is expensive and time-consuming.
+						\item[\small\textgreater] При разработке алгоритмов их необходимо тестировать.
+						\item[\small\textgreater] Использовать реальный кластер долго и дорого.
 					\end{itemize}
 				}{}
 				\alt<3->{
 					{ \hspace{5cm} \large $\Downarrow$ } 
 					\begin{itemize}
-						\item[\small\ding{51}] \textbf{Simulators} are used for effective development.
+						\item[\small\ding{51}] При разработке и тестировании используют \textbf{симуляторы}.
 					\end{itemize}
 				}{}
 		
 	\end{frame}
+
+
+	\subsection{Модель рабочей нагрузки на кластер}
+
+
+	\begin{frame}[fragile]
+		\frametitle{\insertsection} 
+		\framesubtitle{\insertsubsection}
+		\vspace{0.5cm}
+		Рабочая нагрузка состоит из заданий (job), которые делятся на задачи (tasks). 
+
+		\alt<2->{
+		\vspace{0.5cm}
+		Структуры заданий: 
+		\begin{itemize}
+			\item \texttt{rigid} -- фиксированные требования к ресурсам
+			\item \texttt{moldable} -- адаптивные требования к ресурсам 
+			\item \texttt{malleable} -- гибкие требование к ресурсам
+		\end{itemize}
+		}{}
+		
+		\alt<3->{
+		\vspace{0.5cm}
+		Требования к планированию: 
+
+		\begin{itemize}
+			\item Раздельное планирование (MapReduce)
+			\item Комплектное планирование (Gang Scheduling, Slurm)
+		\end{itemize}
+		}{}
+	\end{frame}
+
+	\subsection{Виды входных данных для симулятора}
+
+    \begin{frame}[fragile]
+    \frametitle{\insertsection} 
+	\framesubtitle{\insertsubsection}
 	
-	\subsection{Cluster architecture}
+			\vspace{0.5cm}
+	\begin{columns}[t]
+		\begin{column}{0.55\textwidth}
+			{\centering \small\texttt{Standard Workload Format (SWF)}}
+			\vspace{0.3cm}
+			\begin{itemize}
+				\item<1-> CPU/RAM 
+				\item<2-> Дано время исполнения и требования к ресурсам
+				\item<2-> Нагрузка вычисляется тривиально
+				\item<3-> Используется в популярных трейсах (Google, Alibaba, и т.д.)
+
+			\end{itemize}
+						
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			{\centering  \small\texttt{Custom workloads}}
+			\vspace{0.3cm}
+			\begin{itemize}
+				\item<1-> CPU/RAM/disk/network 
+				\item<2-> Дана нагрузка и ресурсы
+				\item<2-> Время вычисляется с помощью моделей
+				\item<3-> Обычно NDA
+			\end{itemize}
+		\end{column}
+	\end{columns}
+
+
+    \end{frame}
+
+
+	\subsection{Архитектура кластера}
 
 	\begin{frame}[fragile]
     \frametitle{\insertsection} 
@@ -136,58 +204,130 @@
 		\centering
 			\includegraphics[width=\linewidth]{images/cluster}
 			\vspace{0.1cm}
-			\caption*{Simple model of cluster architecture}
+			\caption*{Простая модель архитектуры кластера}
 		\end{figure}
 
 
 	\end{frame}
 
-	\subsection{Two approaches for simulation}
-
-    \begin{frame}[fragile]
-    \frametitle{\insertsection} 
-	\framesubtitle{\insertsubsection}
 	
-			\vspace{1cm}
-	\begin{columns}[t]
-		\begin{column}{0.55\textwidth}
-			{\centering \small\texttt{Standard Workload Format (SWF)}}
-			\vspace{0.3cm}
-			\begin{itemize}
-				\item<1-> CPU/memory resources
-				\item<2-> Given execution time and resources
-				\item<2-> Workload is calculated
-				\item<3-> Used in famous cluster traces (e.g. Google traces)
+	\subsection{Архитектура DSLab}
+	\begin{frame}[fragile]
+		\frametitle{\insertsection} 
+		\framesubtitle{\insertsubsection}
+		\vspace{0.5cm}
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=\linewidth]{images/dslab_arc}
+			\caption*{Архитектура фреймворка DSLab}
+		\end{figure}
+	\end{frame}
 
-			\end{itemize}
-						
+
+	% \subsection{Преимущества \texttt{DSLab}}
+
+	% \begin{frame}
+	% 	\frametitle{\insertsection} 
+	% 	\framesubtitle{\insertsubsection}
+
+
+	% 	\begin{multicols}{2}
+	% 		\begin{itemize}
+	% 		\item Быстрый 
+	% 		\item Написан на \texttt{Rust} 
+	% 		\item Можно использовать готовые модули compute/network/storage  
+	% 		\end{itemize}
+	% 	\end{multicols}
+		
+	% 	\begin{figure}[H]
+	% 		\centering
+	% 		\includegraphics[width=\linewidth]{images/event_pipeline_6}
+	% 		\caption*{Discrete-event modeling in \texttt{DSLab}}
+	% 	\end{figure}
+		
+	% \end{frame}
+
+	\subsection{Асинхронное управление событиями. Комбинаторы \texttt{futures}}
+
+
+	\begin{frame}[fragile]
+		\frametitle{\insertsection} 
+		\framesubtitle{\insertsubsection}
+		\begin{columns}[t]
+			\begin{column}{0.6\linewidth}
+			\begin{figure}
+				\centering
+				\scriptsize
+
+				\begin{rustcode}
+async fn process_task(&self, req: TaskRequest) {
+  let mut task = TaskInfo {req};
+
+  self.download_data(&task).await;
+  self.read_data(&task).await;
+  self.run_task(&task).await;
+  self.write_data(&task).await;
+  self.upload_result(&task).await;
+}
+				\end{rustcode}
+
+				\caption*{Пример последовательных задач.}
+
+			\end{figure}
 		\end{column}
-		\begin{column}{0.5\textwidth}
-			{\centering  \small\texttt{Custom workloads}}
-			\vspace{0.3cm}
-			\begin{itemize}
-				\item<1-> CPU/memory/disk/network resources
-				\item<2-> Given workload and resources
-				\item<2-> Execution time is calculated
-				\item<3-> NDA
-			\end{itemize}
+
+		\begin{column}{0.6\linewidth}
+\begin{figure}[H]
+    \scriptsize
+\begin{rustcode}
+async fn run(&self, args: JobArgs){    
+  futures::join!(
+    self.download_data(args.node_1),
+    self.download_data(args.node_2),       
+  )
+}
+\end{rustcode}
+\vspace{1.3cm}
+\caption*{Пример параллельных задач.}
+\end{figure}	
 		\end{column}
-	\end{columns}
+		\end{columns}
+	\end{frame}
 
 
-    \end{frame}
+	 
+	\subsection{Постановка задачи}
+	\begin{frame}[fragile]
+		\frametitle{\insertsection} 
+		\framesubtitle{\insertsubsection}
+		\vspace{0.5cm}
+		\underline{Цель проекта} -- разработать симулятор вычислительного кластера на базе фреймворка DSLab. Для этого необходимо:
+		\begin{itemize}
+			\item Изучить литературу по теме и существующие симуляторы, подготовить обзор с анализом
+			их преимуществ и недостатков.
+			\item Реализовать компоненты симулятора.
+			\item Написать документацию и тесты.
+			\item Подготовить и провести эксперименты, демонстрирующие работоспособность симулятора.
+		\end{itemize}
+	\end{frame}
 
-	\section{Literature Review}
-	\subsection{Existing Simulators}
+
+
+
+
+
+	\section{Обзор литературы}
+	\subsection{Существующие симуляторы}
 	\begin{frame}
 		\frametitle{\insertsection} 
 		\framesubtitle{\insertsubsection}
 
 		\begin{figure}[H]
-			\hspace{-1cm}
+			\hspace{-1.1cm}
+			\centering
 			\includegraphics[width=1.1\linewidth]{images/simulators}
 			\vspace{0.2cm}
-			\caption*{Existing cluster simulators}
+			\caption*{Существующие симуляторы}
 		\end{figure}
 	\end{frame}
 
@@ -198,13 +338,13 @@
 		\framesubtitle{\insertsubsection}
 		\vspace{1cm}	
 		\begin{itemize}
-			\item Based on \texttt{SimGrid} simulator platform.
-			\item Supports \texttt{SWF} and custom workloads defined as JSON profile.
-			\item Supports connecting scheduling algorithms using inter-process communication.
+			\item Разработан на базе фреймворка \texttt{SimGrid}.
+			\item Поддерживает \texttt{SWF} и пользовательские профили нагрузки через JSON-файл.
+			\item Алгоритмы планирования подключаются к симулятору через IPC (inter-process-communication).
 		\end{itemize}
 		\end{frame}
 
-	\subsection{\texttt{BatSim Workload format}}
+	\subsection{\texttt{Профиль нагрузки в BatSim}}
 	\begin{frame}[fragile]
 		\frametitle{\insertsection} 
 		\framesubtitle{\insertsubsection}
@@ -232,99 +372,14 @@
 	\end{frame}
 
 
-	\section{Methods}
+	\section{Реализация симулятора}
 	\subsection{\texttt{DSLab}}
 
 
-	\begin{frame}
-		\frametitle{\insertsection} 
-		\framesubtitle{\insertsubsection}
 
 
-		\begin{multicols}{2}
-			\begin{itemize}
-			\item Fast \& scalable simulation platform  
-			\item Written in Rust 
-			\item Provides models of compute/network/storage  
-			\end{itemize}
-		\end{multicols}
-		
-		\begin{figure}[H]
-			\centering
-			\includegraphics[width=\linewidth]{images/event_pipeline_6}
-			\caption*{Discrete-event modeling in \texttt{DSLab}}
-		\end{figure}
-		
-	\end{frame}
 
-	\subsection{Asynchronous event management. Rust futures combiners}
-
-
-	\begin{frame}[fragile]
-		\frametitle{\insertsection} 
-		\framesubtitle{\insertsubsection}
-		\begin{columns}[t]
-			\begin{column}{0.6\linewidth}
-			\begin{figure}
-				\centering
-				\scriptsize
-
-				\begin{rustcode}
-async fn process_task(&self, req: TaskRequest) {
-  let mut task = TaskInfo {req};
-
-  self.download_data(&task).await;
-  self.read_data(&task).await;
-  self.run_task(&task).await;
-  self.write_data(&task).await;
-  self.upload_result(&task).await;
-}
-				\end{rustcode}
-
-				\caption*{Example of sequent task execution}
-
-			\end{figure}
-		\end{column}
-
-		\begin{column}{0.6\linewidth}
-\begin{figure}[H]
-    \scriptsize
-\begin{rustcode}
-async fn run(&self, args: JobArgs) {    
-  futures::join!(
-    self.download_data(args.node_1),
-    self.download_data(args.node_2),       
-  )
-}
-\end{rustcode}
-\vspace{1.3cm}
-\caption*{Example of parallel tasks execution}
-\end{figure}	
-		\end{column}
-		\end{columns}
-	\end{frame}
-
-\subsection{JobProfile trait}
-
-	\begin{frame}[fragile]
-		\frametitle{\insertsection} 
-		\framesubtitle{\insertsubsection}
-		
-		\vspace{1.5cm}
-\begin{figure}[H]
-    \small
-\vspace{-0.4cm}    
-\begin{rustcode}
-pub trait JobProfile {
-  async fn run(self: Box<Self>, ctx: JobContext)
-}
-\end{rustcode}
-\caption*{Job trait description}
-\end{figure}
-
-	\end{frame}
-
-	\subsection{Simulator architecture}
+	\subsection{Архитектура симулятора}
 
 	\begin{frame}[fragile]
 		\frametitle{\insertsection} 
@@ -333,13 +388,217 @@ pub trait JobProfile {
 		\vspace{0.5cm}
 \begin{figure}[H]
 	\includegraphics[width=\linewidth]{images/simulator_arc}
-	\caption*{Simulator architecture}
+	\vspace{0.2cm}
+	\caption*{Архитектура симулятора}
 \end{figure}
 
 	\end{frame}
 
-	\section{Expected Results}
-	\subsection{Fast and scalable compute cluster simulator}
+
+	\subsection{Модель кластера}
+
+	\begin{frame}[fragile]
+		\frametitle{\insertsection} 
+		\framesubtitle{\insertsubsection}
+
+
+		\vspace{1.5cm}
+\begin{table}[H]
+	\footnotesize
+    \centering
+    \begin{tabular}{|l|l|c|}
+    \hline
+    \textbf{Название модуля} & \textbf{Используемый модуль} & \textbf{Обязательный} \\
+    \hline
+    \texttt{compute} & \texttt{dslab\_compute::multicore::Compute} & да \\
+    \hline
+    \texttt{network} & \texttt{dslab\_network::Network} & нет  \\
+    \hline
+    \texttt{disk} & \texttt{dslab\_storage::disk::Disk} & нет \\
+    \hline
+    \end{tabular}
+    \caption*{Модули каждого сервера в кластере}
+    \label{tab:server_modules}
+\end{table}
+\end{frame}
+
+
+\subsection{Модель сети \texttt{Fat-Tree-Topology}}
+\begin{frame}[fragile]
+	\frametitle{\insertsection}
+	\framesubtitle{\insertsubsection}
+
+\begin{figure}[H]
+	\centering 
+	\includegraphics[width=\linewidth]{images/fat_tree_topology}
+	\vspace{0.2cm}
+	\caption*{Модель сети \texttt{Fat-Tree-Topology} в кластере}
+\end{figure}
+	\end{frame}
+
+	\subsection{Деление на \texttt{Collection} и \texttt{Execution}}
+
+
+	\begin{frame}[fragile]
+		\frametitle{\insertsection} 
+		\framesubtitle{\insertsubsection}
+
+		\begin{table}[H]
+			\scriptsize
+			\centering
+			\begin{tabular}{|l|l|p{7cm}|}
+				\hline
+				\textbf{Поле} & \textbf{Тип} & \textbf{Описание} \\ 
+				\hline
+				id & \texttt{u64} & Уникальный идентификатор задания \\
+				\hline
+				user & \texttt{Option<String>} & Пользователь, который запускает задание.  \\
+				\hline
+				priority & \texttt{Option<u64>} & Приоритет задания. \\
+				\hline
+				... & ... & ... \\
+				\hline
+			\end{tabular}
+			\caption*{Описание структуры данных \texttt{Collection}}
+			\label{tab:collection}
+		\end{table}
+
+\vspace{-0.5cm}
+
+\begin{table}[h]
+    \centering
+	\scriptsize
+    \begin{tabular}{|l|l|p{5cm}|}
+        \hline
+        \textbf{Поле} & \textbf{Тип} & \textbf{Описание} \\
+        \hline
+        id & \texttt{u64} & Уникальный идентификатор задачи \\
+        \hline
+        collection\_id & \texttt{Option<u64>} & Индекс задания  \\
+        \hline
+        time & \texttt{f64} & Время, когда задача становится доступной для планирования \\
+		\hline
+        resources & \texttt{ResourceRequirements} & Структура требуемых ресурсов \\
+        \hline
+        profile & \texttt{Rc<dyn ExecutionProfile>} & Профиль нагрузки \\
+        \hline
+		... & ... & ... \\
+		\hline
+    \end{tabular}
+    \caption*{Описание структуры данных \texttt{Execution}}
+\end{table}
+
+	\end{frame}
+
+
+
+\subsection{Trait ExecutionProfile}
+
+	\begin{frame}[fragile]
+		\frametitle{\insertsection} 
+		\framesubtitle{\insertsubsection}
+		
+\begin{figure}[H]
+	\centering
+	\hspace*{-0.5cm}
+	\begin{minipage}{1.15\linewidth}
+    \scriptsize
+\begin{rustcode}
+#[async_trait(?Send)]
+pub trait ExecutionProfile {
+  async fn run(self: Rc<Self>, processes: &Vec<HostProcessInstance>);
+}
+\end{rustcode}
+	\end{minipage}
+\caption*{Интерфейс \texttt{ExecutionProfile}}
+\end{figure}
+
+\vspace{-1cm}
+
+\begin{figure}[H]
+	\centering
+	\hspace*{-0.6cm}
+	\begin{minipage}{1.15\linewidth}
+    \scriptsize
+\begin{rustcode}
+async fn sleep(&self, time: f64);
+async fn run_compute_work(&self, compute_work: f64);
+async fn transfer_data_process(&self, size: f64, dst: ProcessId);
+async fn transfer_data_component(&self, size: f64, dst: Id);
+async fn write_data(&self, size: u64);
+async fn read_data(&self, size: u64);
+async fn deallocate(&self);
+\end{rustcode}
+\end{minipage}
+\caption*{Интерфейс взаимодействия процессов с кластером}
+\end{figure}
+
+	\end{frame}
+
+
+	\subsection{Пример реализации \texttt{ExecutionProfile}}
+
+\begin{frame}[fragile]
+	\frametitle{\insertsection} 
+	\framesubtitle{\insertsubsection}
+
+\vspace{-0.5cm}
+
+\begin{figure}[H]
+	\centering
+	% \hspace*{-0.6cm}
+	\begin{minipage}{1.15\linewidth}
+	\fontsize{7.5}{7.2}\selectfont
+	\begin{rustcode}
+pub struct MasterWorkersProfile {
+  pub master_compute_work: f64,
+  pub worker_compute_work: f64,
+  pub data_transfer_size: f64,
+}
+
+#[async_trait(?Send)]
+impl ExecutionProfile for MasterWorkersProfile {
+  async fn run(self: Rc<Self>, processes: &Vec<HostProcessInstance>) {
+    let master = &processes[0];
+    let workers = &processes[1..];
+    
+    futures::future::join_all(workers.iter().map(|p| async {
+      master.transfer_data_process(self.data_transfer_size, p.id).await;
+      p.run_compute(self.worker_compute_work).await;
+    }))
+    .await;
+    
+    master.run_compute(self.master_compute_work).await;
+  }
+}
+		\end{rustcode}
+	\end{minipage}
+		
+		\caption*{Пример реализации интерфейса \texttt{ExecutionProfile}}
+		\label{fig:execution-profile-impl}
+	\end{figure}
+\end{frame}
+
+
+\section{Эксперименты}
+\subsection{Производительность на \texttt{Alibaba Trace}}
+
+\begin{frame}[fragile]
+	\frametitle{\insertsection} 
+	\framesubtitle{\insertsubsection}
+\end{frame}
+
+\subsection{Алгоритмы честности}
+
+
+\begin{frame}[fragile]
+	\frametitle{\insertsection} 
+	\framesubtitle{\insertsubsection}
+\end{frame}
+
+
+	\section{Заключение}
+
 	\begin{frame}[fragile]
 		\frametitle{\insertsection} 
 		\framesubtitle{\insertsubsection}
@@ -354,7 +613,7 @@ pub trait JobProfile {
 
 	\end{frame}
 
-	\section{References}
+	\section{Основные источники}
 	\begin{frame}
 		\frametitle{\insertsection} 
 		\framesubtitle{\insertsubsection}

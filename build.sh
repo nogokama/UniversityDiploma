@@ -13,6 +13,7 @@ names=(
     "report"
     "presentation"
     "project_proposal"
+    "pp_presentation"
 )
 
 for ((i = 0; i < ${#names[@]}; i+= 1)) do
