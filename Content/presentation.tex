@@ -109,19 +109,18 @@
 				\begin{itemize}
 					\item Вычислительные кластеры активно используются в исследованиях и компаниях.
 					\item От качества алгоритма планирования задач зависит эффективность использования ресурсов.
-					\item Такие алгоритмы являются предметом активных исследований.
+					\item При разработке алгоритмов их необходимо тестировать.
 				\end{itemize}
 				\alt<2->{
 					{ \hspace{5cm} \large $\Downarrow$ } 
 					\begin{itemize}
-						\item[\small\textgreater] При разработке алгоритмов их необходимо тестировать.
 						\item[\small\textgreater] Использовать реальный кластер долго и дорого.
 					\end{itemize}
 				}{}
 				\alt<3->{
 					{ \hspace{5cm} \large $\Downarrow$ } 
 					\begin{itemize}
-						\item[\small\ding{51}] При разработке и тестировании используют \textbf{симуляторы}.
+						\item[\small\ding{51}] Используются \textbf{симуляторы}.
 					\end{itemize}
 				}{}
 		
@@ -211,6 +210,50 @@
 	\end{frame}
 
 	
+
+	 
+	\subsection{Постановка задачи}
+	\begin{frame}[fragile]
+		\frametitle{\insertsection} 
+		\framesubtitle{\insertsubsection}
+		\vspace{0.5cm}
+		\underline{Цель проекта} -- разработать симулятор вычислительного кластера на базе фреймворка DSLab. Для этого необходимо:
+		\begin{itemize}
+			\item Изучить литературу по теме и существующие симуляторы, подготовить обзор с анализом
+			их преимуществ и недостатков.
+			\item Реализовать компоненты симулятора.
+			\item Написать документацию и тесты.
+			\item Подготовить и провести эксперименты, демонстрирующие работоспособность симулятора.
+		\end{itemize}
+	\end{frame}
+
+
+
+
+
+
+	\section{Обзор литературы}
+	\subsection{Существующие симуляторы}
+	\begin{frame}
+		\frametitle{\insertsection} 
+		\framesubtitle{\insertsubsection}
+
+		\begin{figure}[H]
+			\hspace{-1.1cm}
+			\centering
+			\includegraphics[width=1.1\linewidth]{images/simulators}
+			\vspace{0.2cm}
+			\caption*{Существующие симуляторы}
+		\end{figure}
+	\end{frame}
+
+
+
+
+
+
+	\section{Реализация симулятора}
+
 	\subsection{Архитектура DSLab}
 	\begin{frame}[fragile]
 		\frametitle{\insertsection} 
@@ -223,29 +266,6 @@
 		\end{figure}
 	\end{frame}
 
-
-	% \subsection{Преимущества \texttt{DSLab}}
-
-	% \begin{frame}
-	% 	\frametitle{\insertsection} 
-	% 	\framesubtitle{\insertsubsection}
-
-
-	% 	\begin{multicols}{2}
-	% 		\begin{itemize}
-	% 		\item Быстрый 
-	% 		\item Написан на \texttt{Rust} 
-	% 		\item Можно использовать готовые модули compute/network/storage  
-	% 		\end{itemize}
-	% 	\end{multicols}
-		
-	% 	\begin{figure}[H]
-	% 		\centering
-	% 		\includegraphics[width=\linewidth]{images/event_pipeline_6}
-	% 		\caption*{Discrete-event modeling in \texttt{DSLab}}
-	% 	\end{figure}
-		
-	% \end{frame}
 
 	\subsection{Асинхронное управление событиями. Комбинаторы \texttt{futures}}
 
@@ -293,87 +313,6 @@ async fn run(&self, args: JobArgs){
 		\end{column}
 		\end{columns}
 	\end{frame}
-
-
-	 
-	\subsection{Постановка задачи}
-	\begin{frame}[fragile]
-		\frametitle{\insertsection} 
-		\framesubtitle{\insertsubsection}
-		\vspace{0.5cm}
-		\underline{Цель проекта} -- разработать симулятор вычислительного кластера на базе фреймворка DSLab. Для этого необходимо:
-		\begin{itemize}
-			\item Изучить литературу по теме и существующие симуляторы, подготовить обзор с анализом
-			их преимуществ и недостатков.
-			\item Реализовать компоненты симулятора.
-			\item Написать документацию и тесты.
-			\item Подготовить и провести эксперименты, демонстрирующие работоспособность симулятора.
-		\end{itemize}
-	\end{frame}
-
-
-
-
-
-
-	\section{Обзор литературы}
-	\subsection{Существующие симуляторы}
-	\begin{frame}
-		\frametitle{\insertsection} 
-		\framesubtitle{\insertsubsection}
-
-		\begin{figure}[H]
-			\hspace{-1.1cm}
-			\centering
-			\includegraphics[width=1.1\linewidth]{images/simulators}
-			\vspace{0.2cm}
-			\caption*{Существующие симуляторы}
-		\end{figure}
-	\end{frame}
-
-	\subsection{\texttt{BatSim}}
-
-	\begin{frame}[fragile]
-		\frametitle{\insertsection} 
-		\framesubtitle{\insertsubsection}
-		\vspace{1cm}	
-		\begin{itemize}
-			\item Разработан на базе фреймворка \texttt{SimGrid}.
-			\item Поддерживает \texttt{SWF} и пользовательские профили нагрузки через JSON-файл.
-			\item Алгоритмы планирования подключаются к симулятору через IPC (inter-process-communication).
-		\end{itemize}
-		\end{frame}
-
-	\subsection{\texttt{Профиль нагрузки в BatSim}}
-	\begin{frame}[fragile]
-		\frametitle{\insertsection} 
-		\framesubtitle{\insertsubsection}
-		\begin{figure}
-			\scriptsize
-		\begin{jsoncode}
-"jobs": [
-  {"id": "job1",  ...  "res": 4, "profile": "sequence"},
-],
-
-"profiles": {
-  "homogeneous": {
-    "type": "parallel_homogeneous",
-    "cpu": 10e6,
-    "com": 1e6
-  },
-  "sequence": {
-    "type": "composed",
-    "repeat" : 4,
-    "seq": ["simple","homogeneous","simple"]
-  },
-}
-		\end{jsoncode}
-	\end{figure}
-	\end{frame}
-
-
-	\section{Реализация симулятора}
-	\subsection{\texttt{DSLab}}
 
 
 
@@ -518,6 +457,7 @@ pub trait ExecutionProfile {
 \begin{figure}[H]
 	\centering
 	\hspace*{-0.6cm}
+	% \includegraphics[width=\linewidth]{images/profile_interface}
 	\begin{minipage}{1.15\linewidth}
     \scriptsize
 \begin{rustcode}
@@ -533,6 +473,8 @@ async fn deallocate(&self);
 \caption*{Интерфейс взаимодействия процессов с кластером}
 \end{figure}
 
+
+
 	\end{frame}
 
 
@@ -542,42 +484,112 @@ async fn deallocate(&self);
 	\frametitle{\insertsection} 
 	\framesubtitle{\insertsubsection}
 
-\vspace{-0.5cm}
+\vspace{0.2cm}
 
-\begin{figure}[H]
-	\centering
-	% \hspace*{-0.6cm}
-	\begin{minipage}{1.15\linewidth}
-	\fontsize{7.5}{7.2}\selectfont
-	\begin{rustcode}
-pub struct MasterWorkersProfile {
-  pub master_compute_work: f64,
-  pub worker_compute_work: f64,
-  pub data_transfer_size: f64,
-}
+\begin{figure}
+	\centering 
+	\includegraphics<1>[width=\linewidth]{images/mw_code_1}
+	\includegraphics<2>[width=\linewidth]{images/mw_code_2}
+	\includegraphics<3>[width=\linewidth]{images/mw_code_3}
+	\includegraphics<4>[width=\linewidth]{images/mw_code_4}
+\end{figure}
+% \begin{columns}
+% 	\begin{column}{1.1\linewidth}
+% 	\hspace*{-0.1cm}
+% 	\fontsize{7.5}{8}\selectfont
+% 	\begin{rustcode}
+% pub struct MasterWorkersProfile {
+%   pub master_compute_work: f64,
+%   pub worker_compute_work: f64,
+%   pub data_transfer_size: f64,
+% }
+% 	\end{rustcode}
 
-#[async_trait(?Send)]
-impl ExecutionProfile for MasterWorkersProfile {
-  async fn run(self: Rc<Self>, processes: &Vec<HostProcessInstance>) {
-    let master = &processes[0];
-    let workers = &processes[1..];
+% 	\begin{rustcode}
+% #[async_trait(?Send)]
+% impl ExecutionProfile for MasterWorkersProfile {
+%   async fn run(self: Rc<Self>, processes: &Vec<HostProcessInstance>) {
+%     let master = &processes[0];
+%     let workers = &processes[1..];
+% 	\end{rustcode}
+% 	\begin{rustcode}
+%     futures::future::join_all(workers.iter().map(|p| async {
+%       master.transfer_data_process(self.data_transfer_size, p.id).await;
+%       p.run_compute(self.worker_compute_work).await;
+%     }))
+%     .await;
     
-    futures::future::join_all(workers.iter().map(|p| async {
-      master.transfer_data_process(self.data_transfer_size, p.id).await;
-      p.run_compute(self.worker_compute_work).await;
-    }))
-    .await;
-    
-    master.run_compute(self.master_compute_work).await;
-  }
+%     master.run_compute(self.master_compute_work).await;
+%   }
+% }
+% 		\end{rustcode}
+
+% 	\end{column}
+% \end{columns}
+
+\end{frame}
+
+
+\subsection{Входные данные}
+
+\begin{frame}[fragile]
+	\frametitle{\insertsection} 
+	\framesubtitle{\insertsubsection}
+	\vspace{1cm}
+	\begin{enumerate}
+		\item<1-> \texttt{Native} -- нагрузка в формате \texttt{YAML}
+		\item<2-> \texttt{Google Trace}
+		\item<2-> \texttt{Alibaba Trace}
+		\item<3-> \texttt{SWF} -- Standard Workload Format
+		\item<4-> \texttt{Synthetic Trace Generator}
+	\end{enumerate}
+\end{frame}
+
+\subsection{Модель планировщика}
+\begin{frame}[fragile]
+	\frametitle{\insertsection} 
+	\framesubtitle{\insertsubsection}
+	\vspace{-1cm}
+	\begin{columns}
+		\begin{column}{1.1\linewidth}
+	\begin{figure}[H]
+		\fontsize{7.5}{10}\selectfont
+		\begin{rustcode}
+pub trait Scheduler {
+  fn on_host_added(&mut self, ctx: &Context, host: HostConfig);
+  fn on_execution_request(&mut self, ctx: &Context, req: Execution);
+  fn on_collection_request(&mut self, ctx: &Context, req: Collection);
+  fn on_execution_finished(&mut self, ctx: &Context, execution_id: u64);
+  fn on_host_notification(&mut self, ctx: &Context, host_id: Id, resources: ResourcesPack);
 }
 		\end{rustcode}
-	\end{minipage}
-		
-		\caption*{Пример реализации интерфейса \texttt{ExecutionProfile}}
-		\label{fig:execution-profile-impl}
+		\vspace{-0.5cm}
+		\caption*{Интерфейс планировщика \texttt{Scheduler}}
 	\end{figure}
+
+\end{column}
+\end{columns}
+
+% \vspace{-0.5cm}
+
+\begin{columns}
+	\begin{column}{1.1\linewidth}
+{
+	\small
+	\begin{itemize}
+\item<2-> Возможности контекста: 
+	\begin{enumerate}
+		\item Запланировать/отменить задачу (полная отмена недоступна) 
+		\item<3-> Доступ к генератору случайных чисел симуляции
+	\end{enumerate}
+\item<4-> Можно реализовать планировщик как компонент симуляции и получить больше возможностей (например, асинхронность).
+\end{itemize}
+}
+\end{column}
+\end{columns}
+
 \end{frame}
+
 
 
 \section{Эксперименты}
@@ -586,14 +598,205 @@ impl ExecutionProfile for MasterWorkersProfile {
 \begin{frame}[fragile]
 	\frametitle{\insertsection} 
 	\framesubtitle{\insertsubsection}
+	
+	\begin{columns}[t]
+		\begin{column}{0.7\linewidth}
+			\vspace{-1cm}
+	\begin{figure}[H]
+		\centering 
+		\includegraphics[width=\linewidth]{images/simulation_time}
+		\caption*{Время работы симуляции в зависимости от количества задач}
+	  \end{figure}
+	\end{column} 
+	\hspace{-1cm}
+	\begin{column}{0.5\linewidth}
+		\begin{itemize}
+			\item На трейсе длиной 2.5 дня (350 млн задач, 25GB) время работы 45 минут
+			\item Ускорение в 85 раз относительно реальной работы. 
+			\item Необходимо сортировать трейс по времени.
+		\end{itemize}
+	\end{column}
+\end{columns}
 \end{frame}
 
-\subsection{Алгоритмы честности}
+\subsection{Алгоритмы честности. \texttt{DRF} \& \texttt{Tetris}}
 
 
 \begin{frame}[fragile]
 	\frametitle{\insertsection} 
 	\framesubtitle{\insertsubsection}
+
+	\begin{columns}[t] 
+		\begin{column}{0.7\linewidth}
+			\begin{figure}[H]
+			\centering 
+			\includegraphics<1>[width=\linewidth]{images/drf_1}
+			\includegraphics<2->[width=\linewidth]{images/drf_2}
+			\caption*{Потребление ресурсов пользователями}
+			\end{figure}			
+		\end{column}
+		\hspace{-1cm}
+		\begin{column}{0.35\linewidth}
+			\alt<2->{
+				\vspace{0.6cm}
+
+			Dominant shares:
+			\begin{itemize}
+				\item USER1 = $1/10$
+				\item USER2 = $1/5$
+				\item<3-> USER1 первый получит ресурсы
+			\end{itemize}
+			}{}
+		\end{column}
+	\end{columns}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{\insertsection}
+\framesubtitle{\insertsubsection}
+
+Метрика <<упаковки>>: $H_{angle} = 1 - \cos(\measuredangle(Task_{res}, Server_{res}) )$
+
+\alt<2->{
+\begin{figure}
+	\centering 
+	\includegraphics[width=0.8\linewidth]{images/tetris_match}
+	\caption*{Пример работы алгоритма \texttt{Tetris}}
+\end{figure}
+}{}
+
+\end{frame}
+
+\subsection{\texttt{DRF} \& \texttt{Tetris}. Коэффициент честности f} 
+
+\begin{frame}[fragile]
+	\frametitle{\insertsection} 
+	\framesubtitle{\insertsubsection}
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics<1>[width=0.8\linewidth]{images/tetris_pipeline_0} 
+		\includegraphics<2>[width=0.8\linewidth]{images/tetris_pipeline_1} 
+		\includegraphics<3>[width=0.8\linewidth]{images/tetris_pipeline_2} 
+		\includegraphics<4>[width=0.8\linewidth]{images/tetris_pipeline_3} 
+		\includegraphics<5>[width=0.8\linewidth]{images/tetris_pipeline_4} 
+		\caption*{Процесс принятия решения о планировании}
+	\end{figure}
+
+
+\end{frame}
+
+\subsection{Кластер для экспериментов на честность}
+
+\begin{frame}[fragile]
+	\frametitle{\insertsection} 
+	\framesubtitle{\insertsubsection}
+
+	\vspace{-0.5cm}
+	
+\begin{figure}[H]
+    \centering 
+    \includegraphics[width=0.8\linewidth]{images/hosts_distribution}
+    \caption*{Распределение ресурсов на серверах кластера}
+\end{figure}
+
+
+\end{frame}
+
+
+\subsection{Результаты утилизации}
+
+\begin{frame}[fragile]
+	\frametitle{\insertsection} 
+	\framesubtitle{\insertsubsection}
+
+	\vspace{-0.5cm}
+	
+	\begin{columns}
+		\begin{column}{0.6\linewidth}
+			\begin{figure}[H]
+				\centering 
+					\includegraphics[width=\linewidth]{images/cpu_utilization}
+					\caption*{Утилизация CPU при разных $f$}
+				\end{figure}
+		\end{column}
+		\hspace{-0.5cm}
+		\begin{column}{0.6\linewidth}
+			\begin{figure}[H]
+				\centering 
+					\includegraphics[width=\linewidth]{images/memory_utilization}
+					\caption*{Утилизация RAM при разных $f$}
+				\end{figure}
+		\end{column}
+	\end{columns}
+
+	
+\end{frame}
+
+
+
+
+\subsection{Результаты честности}
+
+\begin{frame}[fragile]
+	\frametitle{\insertsection} 
+	\framesubtitle{\insertsubsection}
+
+	\vspace{-0.5cm}
+	
+	\begin{columns}
+		\begin{column}{0.65\linewidth}
+			\begin{figure}[H]
+				\centering 
+					\includegraphics[width=\linewidth]{images/fair_share_0}
+					\caption*{$f = 0$}
+				\end{figure}
+		\end{column}
+		\hspace{-1cm}
+		\begin{column}{0.65\linewidth}
+			\begin{figure}[H]
+				\centering 
+					\includegraphics[width=\linewidth]{images/fair_share_1}
+					\caption*{$f = 1$}
+				\end{figure}
+		\end{column}
+	\end{columns}
+
+	
+\end{frame}
+
+
+\begin{frame}[fragile]
+	\frametitle{\insertsection} 
+	\framesubtitle{\insertsubsection}
+
+	\vspace{-0.5cm}
+	
+	\begin{columns}
+		\begin{column}{0.65\linewidth}
+			\begin{figure}[H]
+				\centering 
+					\includegraphics[width=\linewidth]{images/fair_share_05}
+					\caption*{$f = 0.5$}
+				\end{figure}
+		\end{column}
+		\hspace{-1cm}
+		\begin{column}{0.65\linewidth}
+			\begin{figure}[H]
+				\centering 
+					\includegraphics[width=\linewidth]{images/fair_share_06}
+					\caption*{$f = 0.6$}
+				\end{figure}
+		\end{column}
+	\end{columns}
+
+	\alt<2->{
+		\textbf{Вывод:} $f = 0.6$ -- оптимальный параметр честности для такой конфигурации кластера и задач пользователей. 
+	}{}
+
+	
 \end{frame}
 
 
@@ -602,28 +805,97 @@ impl ExecutionProfile for MasterWorkersProfile {
 	\begin{frame}[fragile]
 		\frametitle{\insertsection} 
 		\framesubtitle{\insertsubsection}
-		\vspace{1cm}
+		\small
+		\vspace{-0.5cm}
+		\hspace*{-0.5cm}
+		\begin{minipage}{1.1\linewidth}
+			{\centering
 		\begin{itemize}
-			\item[\ding{51}] \texttt{SWF}-based simulation 
-			\item Custom workload simulation
-			\item Support reading workload traces from popular sources (Google, Alibaba)
-			\item Support for collecting metrics during the simulation and writing them to a file with the results
-			\item High performance, support for cluster modeling from 1-10K servers
+			\item<1->[\ding{51}] Реализовать эффективный симулятор вычислительного кластера.
+			\item<2->[\ding{51}] Поддержать несколько моделей рабочей нагрузки и планирования заданий.
+			\item<3->[\ding{51}] Поддержать чтение трейсов нагрузки компаний (Google, Alibaba).
+			\item<4->[\ding{51}] Поддержать адаптивный сбор статистики для анализа результатов (нагрузка на кластер, честность, статистика очереди)
+			\item<5->[\ding{51}] Реализовать несколько популярных алгоритмов (FCFS, DRF, Tetris).
+			\item<6->[\ding{51}] Доработать реализацию асинхронного ядра \texttt{dslab-core} и ускорить его работу в 2 раза.
+			% \item<7->[\ding{51}] Улучшить модель мгновенной честной доли и добавить в нее возможность отмены активностей.
 		\end{itemize}
+			}
+			\vspace{0.2cm}
+			\alt<7->{
+		\textbf{Главное достижение:} предоставить возможность описывать рабочую нагрузку в виде асинхронных примитивов языка \texttt{Rust}.
+			}{}
+			
+	\end{minipage}
 
 	\end{frame}
 
-	\section{Основные источники}
-	\begin{frame}
+	% \section{Основные источники}
+	% \begin{frame}
+	% 	\frametitle{\insertsection} 
+	% 	\framesubtitle{\insertsubsection}
+	% 	\vspace{1cm}	
+	% 	\begin{enumerate}
+	% 		\item The standard workload format specification. \url{https://www.cs.huji.ac.il/labs/parallel/workload/swf.html}
+	% 		\item Dslab repository. \url{https://github.com/osukhoroslov/dslab}
+	% 		\item BatSim docs. \url{https://batsim.readthedocs.io/en/latest/}
+	% 	\end{enumerate}
+	% 	% \printbibliography
+	% \end{frame}
+
+	\section{Приложения}
+	
+	\begin{frame}{\textbf{Вопросы}}
+	
+		\begin{enumerate}
+			\item \hyperlink{batsim-compare}{\nameref{batsim-compare}}
+			\item Входные профили нагрузки через yaml-файл 
+			\item Профили по умолчанию 
+			\item Выходные данные и monitoring 
+			\item Ускорение async-dslab-core в 2 раза
+			\item Модель мгновенной честной доли с отменой задач 
+			\item Дискретно-событийное моделирование 
+		\end{enumerate}
+	\end{frame}
+
+	\subsection{\texttt{Сравнение с симулятором \texttt{BatSim}}}\label{batsim-compare}
+
+	\begin{frame}[fragile]
 		\frametitle{\insertsection} 
 		\framesubtitle{\insertsubsection}
 		\vspace{1cm}	
-		\begin{enumerate}
-			\item The standard workload format specification. \url{https://www.cs.huji.ac.il/labs/parallel/workload/swf.html}
-			\item Dslab repository. \url{https://github.com/osukhoroslov/dslab}
-			\item BatSim docs. \url{https://batsim.readthedocs.io/en/latest/}
-		\end{enumerate}
-		% \printbibliography
+		\begin{itemize}
+			\item Разработан на базе фреймворка \texttt{SimGrid}.
+			\item Поддерживает \texttt{SWF} и пользовательские профили нагрузки через JSON-файл.
+			\item Алгоритмы планирования подключаются к симулятору через IPC (inter-process-communication).
+		\end{itemize}
+		\end{frame}
+
+
+	\subsection{\texttt{Профиль нагрузки в BatSim}}
+	\begin{frame}[fragile]
+		\frametitle{\insertsection} 
+		\framesubtitle{\insertsubsection}
+		\begin{figure}
+			\scriptsize
+		\begin{jsoncode}
+"jobs": [
+  {"id": "job1",  ...  "res": 4, "profile": "sequence"},
+],
+
+"profiles": {
+  "homogeneous": {
+    "type": "parallel_homogeneous",
+    "cpu": 10e6,
+    "com": 1e6
+  },
+  "sequence": {
+    "type": "composed",
+    "repeat" : 4,
+    "seq": ["simple","homogeneous","simple"]
+  },
+}
+		\end{jsoncode}
+	\end{figure}
 	\end{frame}
 
 \end{document}

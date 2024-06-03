@@ -1,4 +1,6 @@
 \usepackage{listings}
+\usepackage{xcolor}
+
 
 \lstdefinelanguage{Rust}{
   sensitive=true,
@@ -80,6 +82,21 @@
   }
 }{}
 
+\definecolor{mycustomcolor}{RGB}{150, 150, 150}
+
+\lstnewenvironment{greycode}[1][]{
+  \lstset{
+    language=YAML,
+    basicstyle=\ttfamily\color{mycustomcolor},
+    keywordstyle=\color{mycustomcolor},
+    stringstyle=\color{mycustomcolor},
+    commentstyle=\color{mycustomcolor},
+    showstringspaces=false,
+    breaklines=true,
+    % frame=single,
+    #1
+  }
+}{}
 
 \lstdefinelanguage{YAML}{
     keywords={true,false,null,y,n},
