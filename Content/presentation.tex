@@ -23,7 +23,7 @@
 \usepackage[T2A]{fontenc}			% кодировка
 \usepackage[utf8]{inputenc}			% кодировка исходного текста
 %%% Работа с русским языком и шрифтами
-\usepackage[english]{babel}   % загружает пакет многоязыковой вёрстки
+\usepackage[english,russian]{babel}   % загружает пакет многоязыковой вёрстки
 
 
 %%% Дополнительная работа с математикой
@@ -115,6 +115,7 @@
 					{ \hspace{5cm} \large $\Downarrow$ } 
 					\begin{itemize}
 						\item[\small\textgreater] Использовать реальный кластер долго и дорого.
+						\item[\small\textgreater] Необходимо обеспечивать воспроизводимость результатов.
 					\end{itemize}
 				}{}
 				\alt<3->{
@@ -125,6 +126,38 @@
 				}{}
 		
 	\end{frame}
+
+	\subsection{Архитектура кластера}
+
+	\begin{frame}[fragile]
+    \frametitle{\insertsection} 
+	\framesubtitle{\insertsubsection}
+	\vspace{0.1cm}	
+	\begin{figure}[H]
+		\centering
+			\includegraphics[width=\linewidth]{images/cluster_network}
+			\vspace{0.1cm}
+			\caption*{Модель архитектуры кластера}
+		\end{figure}
+
+
+	\end{frame}
+
+	\subsection{Симуляция кластера}
+
+	\begin{frame}[fragile]
+		\frametitle{\insertsection} 
+		\framesubtitle{\insertsubsection}
+		\vspace{0.1cm}	
+		\begin{figure}[H]
+			\centering
+				\includegraphics[width=\linewidth]{images/input_output_data}
+				\vspace{0.1cm}
+				\caption*{Входные и выходные данные симулятора}
+			\end{figure}
+	
+	
+		\end{frame}
 
 
 	\subsection{Модель рабочей нагрузки на кластер}
@@ -173,7 +206,6 @@
 				\item<2-> Дано время исполнения и требования к ресурсам
 				\item<2-> Нагрузка вычисляется тривиально
 				\item<3-> Используется в популярных трейсах (Google, Alibaba, и т.д.)
-
 			\end{itemize}
 						
 		\end{column}
@@ -193,21 +225,7 @@
     \end{frame}
 
 
-	\subsection{Архитектура кластера}
 
-	\begin{frame}[fragile]
-    \frametitle{\insertsection} 
-	\framesubtitle{\insertsubsection}
-	\vspace{0.1cm}	
-	\begin{figure}[H]
-		\centering
-			\includegraphics[width=\linewidth]{images/cluster}
-			\vspace{0.1cm}
-			\caption*{Простая модель архитектуры кластера}
-		\end{figure}
-
-
-	\end{frame}
 
 	
 
@@ -326,7 +344,8 @@ async fn run(&self, args: JobArgs){
 		
 		\vspace{0.5cm}
 \begin{figure}[H]
-	\includegraphics[width=\linewidth]{images/simulator_arc}
+	\includegraphics[width=\linewidth]{images/cluster-design-colored}
+	% \includegraphics[width=\linewidth]{images/simulator_arc}
 	\vspace{0.2cm}
 	\caption*{Архитектура симулятора}
 \end{figure}
@@ -430,6 +449,51 @@ async fn run(&self, args: JobArgs){
 	\end{frame}
 
 
+	\subsection{Модель планировщика}
+\begin{frame}[fragile]
+	\frametitle{\insertsection} 
+	\framesubtitle{\insertsubsection}
+	\vspace{-1cm}
+	\begin{columns}
+		\begin{column}{1.1\linewidth}
+	\begin{figure}[H]
+		\fontsize{7.5}{10}\selectfont
+		\begin{rustcode}
+pub trait Scheduler {
+  fn on_host_added(&mut self, ctx: &Context, host: HostConfig);
+  fn on_execution_request(&mut self, ctx: &Context, req: Execution);
+  fn on_collection_request(&mut self, ctx: &Context, req: Collection);
+  fn on_execution_finished(&mut self, ctx: &Context, execution_id: u64);
+  fn on_host_notification(&mut self, ctx: &Context, host_id: Id, resources: ResourcesPack);
+}
+		\end{rustcode}
+		\vspace{-0.5cm}
+		\caption*{Интерфейс планировщика \texttt{Scheduler}}
+	\end{figure}
+
+\end{column}
+\end{columns}
+
+% \vspace{-0.5cm}
+
+\begin{columns}
+	\begin{column}{1.1\linewidth}
+{
+	\small
+	\begin{itemize}
+\item<2-> Возможности контекста: 
+	\begin{enumerate}
+		\item Запланировать/отменить задачу (полная отмена недоступна) 
+		\item<3-> Доступ к генератору случайных чисел симуляции
+	\end{enumerate}
+\item<4-> Можно реализовать планировщик как компонент симуляции и получить больше возможностей (например, асинхронность).
+\end{itemize}
+}
+\end{column}
+\end{columns}
+
+\end{frame}
+
 
 \subsection{Trait ExecutionProfile}
 
@@ -529,71 +593,178 @@ async fn deallocate(&self);
 
 \end{frame}
 
-
-\subsection{Входные данные}
+\subsection{Пример описания рабочей нагрузки через файл \texttt{YAML}}
 
 \begin{frame}[fragile]
-	\frametitle{\insertsection} 
+	\frametitle{\insertsection}
 	\framesubtitle{\insertsubsection}
-	\vspace{1cm}
-	\begin{enumerate}
-		\item<1-> \texttt{Native} -- нагрузка в формате \texttt{YAML}
-		\item<2-> \texttt{Google Trace}
-		\item<2-> \texttt{Alibaba Trace}
-		\item<3-> \texttt{SWF} -- Standard Workload Format
-		\item<4-> \texttt{Synthetic Trace Generator}
-	\end{enumerate}
-\end{frame}
 
-\subsection{Модель планировщика}
-\begin{frame}[fragile]
-	\frametitle{\insertsection} 
-	\framesubtitle{\insertsubsection}
 	\vspace{-1cm}
 	\begin{columns}
-		\begin{column}{1.1\linewidth}
-	\begin{figure}[H]
-		\fontsize{7.5}{10}\selectfont
-		\begin{rustcode}
-pub trait Scheduler {
-  fn on_host_added(&mut self, ctx: &Context, host: HostConfig);
-  fn on_execution_request(&mut self, ctx: &Context, req: Execution);
-  fn on_collection_request(&mut self, ctx: &Context, req: Collection);
-  fn on_execution_finished(&mut self, ctx: &Context, execution_id: u64);
-  fn on_host_notification(&mut self, ctx: &Context, host_id: Id, resources: ResourcesPack);
-}
-		\end{rustcode}
-		\vspace{-0.5cm}
-		\caption*{Интерфейс планировщика \texttt{Scheduler}}
+		\scriptsize
+	\begin{column}{0.5\textwidth}
+		\begin{figure}[H]
+			\centering
+		\begin{yamlcode}
+compute-simple: 
+  type: compute-homogenous
+  args: 
+	compute_work: 1000.0 
+compute-hard:
+  type: compute-homogenous
+  args:
+	compute_work: 2000.0
+net-all-to-all-simple:
+  type: communication-homogenous
+  args: 
+	size: 500.0 
+disk-simple-read: 
+  type: disk-read 
+  args: 
+	size: 1000
+		\end{yamlcode}
+		\caption*{Пример описания базовых профилей}
 	\end{figure}
-
-\end{column}
-\end{columns}
-
-% \vspace{-0.5cm}
-
-\begin{columns}
-	\begin{column}{1.1\linewidth}
-{
-	\small
-	\begin{itemize}
-\item<2-> Возможности контекста: 
-	\begin{enumerate}
-		\item Запланировать/отменить задачу (полная отмена недоступна) 
-		\item<3-> Доступ к генератору случайных чисел симуляции
-	\end{enumerate}
-\item<4-> Можно реализовать планировщик как компонент симуляции и получить больше возможностей (например, асинхронность).
-\end{itemize}
-}
-\end{column}
-\end{columns}
+	\end{column}
+	\hspace{-0.5cm}
+	\begin{column}{0.6\textwidth}
+		\begin{figure}[H]
+			\centering
+		\begin{yamlcode}
+complex_execution_profile:
+  type: sequence
+  args:
+    repeat: 2
+    profiles:
+      - disk-simple-read
+      - compute-simple
+      - parallel
+    	args:
+    	  profiles:
+            - compute-hard
+            - net-all-to-all-simple
+      - disk-simple-write-part
+      - parallel
+    	args:
+    	  profiles:
+            - compute-simple
+            - net-all-to-all-simple
+      - disk-simple-write-part
+	\end{yamlcode}
+	\vspace{-0.2cm}
+		\caption*{Пример описания профиля через комбинаторы}
+\end{figure}
+	\end{column}
+	\end{columns}
 
 \end{frame}
 
 
+\section{Сравнение с \texttt{BatSim}}
+\subsection{Модель рабочей нагрузки}
 
-\section{Эксперименты}
-\subsection{Производительность на \texttt{Alibaba Trace}}
+\begin{frame}[fragile]
+	\frametitle{\insertsection} 
+	\framesubtitle{\insertsubsection}
+	\vspace{-0.5cm}
+	\begin{figure}
+		\scriptsize
+	\begin{jsoncode}
+"jobs": [
+  {"id": "job1",  ...  "res": 4, "profile": "sequence"},
+],
+
+"profiles": {
+  "homogeneous": {
+    "type": "parallel_homogeneous",
+    "cpu": 10e6,
+    "com": 1e6
+  },
+  "simple": {
+    "type": "parallel",
+    "cpu": [5e6,  0,  0,  0],
+    "com": [5e6,  0,  0,  0,
+            5e6,5e6,  0,  0,
+            5e6,5e6,  0,  0,
+            5e6,5e6,5e6,  0]
+  },
+  "sequence": {
+    "type": "composed",
+    "repeat" : 4,
+    "seq": ["simple","homogeneous","simple"]
+  },
+}
+	\end{jsoncode}
+\end{figure}
+\end{frame}
+
+
+\subsection{Скорость} 
+
+\begin{frame}[fragile]
+	\frametitle{\insertsection} 
+	\framesubtitle{\insertsubsection}
+	\vspace{0.5cm}
+	\textbf{Входная задача}: 
+	\begin{itemize}
+		\item Параллельные вычисления и коммуникация всех со всеми на 5 серверах кластера. 
+		\item Кластер из 30 серверов.
+	\end{itemize} 
+
+	\vspace{0.5cm}
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{|c|c|c|c|}
+			\hline
+			\textbf{Симулятор} & \multicolumn{3}{c|}{\textbf{Время работы симуляции (сек)}}    \\
+			\cline{2-4}
+			& 2100 задач & 4300 задач & 8500 задач \\
+			\hline
+			\texttt{DSLab-Sim} & 2.49 & 5.1 & 9.8 \\
+			\hline
+			\texttt{BatSim} &  16.5 & 53 & 130 \\
+			\hline
+		\end{tabular}
+		\caption*{Сравнение скорости работы симуляторов}
+	\end{table}
+\end{frame}
+
+\subsection{Итоги сравнения}
+
+\begin{frame}[fragile]
+	\frametitle{\insertsection} 
+	\framesubtitle{\insertsubsection}
+	Наш симулятор:
+\begin{itemize}
+	\item<1->Предоставляет базовые профили, покрывающие функционал \texttt{BatSim}
+	\item<2-> Позволяет более гибко настраивать нагрузку через асинхронные функции и комбинаторы 
+	\item<3-> Поддерживает моделирование упаковки задач и более гибкую настройку кластера
+	\item<4-> Поддерживает моделирование диска 
+	\item<5-> Более удобен в использовании.
+	\item<6-> Существенно превосходит \texttt{BatSim} по скорости.
+\end{itemize}
+\end{frame}
+
+
+% \subsection{Входные данные}
+
+% \begin{frame}[fragile]
+% 	\frametitle{\insertsection} 
+% 	\framesubtitle{\insertsubsection}
+% 	\vspace{1cm}
+% 	\begin{enumerate}
+% 		\item<1-> \texttt{Native} -- нагрузка в формате \texttt{YAML}
+% 		\item<2-> \texttt{Google Trace}
+% 		\item<2-> \texttt{Alibaba Trace}
+% 		\item<3-> \texttt{SWF} -- Standard Workload Format
+% 		\item<4-> \texttt{Synthetic Trace Generator}
+% 	\end{enumerate}
+% \end{frame}
+
+
+
+\section{Эксперименты: скорость}
+\subsection{Производительность на \texttt{Alibaba Trace} (2018 г.)}
 
 \begin{frame}[fragile]
 	\frametitle{\insertsection} 
@@ -614,62 +785,15 @@ pub trait Scheduler {
 			\item На трейсе длиной 2.5 дня (350 млн задач, 25GB) время работы 45 минут
 			\item Ускорение в 85 раз относительно реальной работы. 
 			\item Необходимо сортировать трейс по времени.
+			\item Без инкрементального чтения невозможно обработать трейс.
 		\end{itemize}
 	\end{column}
 \end{columns}
 \end{frame}
 
-\subsection{Алгоритмы честности. \texttt{DRF} \& \texttt{Tetris}}
+\section{Эксперименты: справедливость}
 
-
-\begin{frame}[fragile]
-	\frametitle{\insertsection} 
-	\framesubtitle{\insertsubsection}
-
-	\begin{columns}[t] 
-		\begin{column}{0.7\linewidth}
-			\begin{figure}[H]
-			\centering 
-			\includegraphics<1>[width=\linewidth]{images/drf_1}
-			\includegraphics<2->[width=\linewidth]{images/drf_2}
-			\caption*{Потребление ресурсов пользователями}
-			\end{figure}			
-		\end{column}
-		\hspace{-1cm}
-		\begin{column}{0.35\linewidth}
-			\alt<2->{
-				\vspace{0.6cm}
-
-			Dominant shares:
-			\begin{itemize}
-				\item USER1 = $1/10$
-				\item USER2 = $1/5$
-				\item<3-> USER1 первый получит ресурсы
-			\end{itemize}
-			}{}
-		\end{column}
-	\end{columns}
-
-\end{frame}
-
-
-\begin{frame}
-\frametitle{\insertsection}
-\framesubtitle{\insertsubsection}
-
-Метрика <<упаковки>>: $H_{angle} = 1 - \cos(\measuredangle(Task_{res}, Server_{res}) )$
-
-\alt<2->{
-\begin{figure}
-	\centering 
-	\includegraphics[width=0.8\linewidth]{images/tetris_match}
-	\caption*{Пример работы алгоритма \texttt{Tetris}}
-\end{figure}
-}{}
-
-\end{frame}
-
-\subsection{\texttt{DRF} \& \texttt{Tetris}. Коэффициент честности f} 
+\subsection{\texttt{DRF} \& \texttt{Tetris} (Grandl и др., 2014).} 
 
 \begin{frame}[fragile]
 	\frametitle{\insertsection} 
@@ -682,13 +806,13 @@ pub trait Scheduler {
 		\includegraphics<3>[width=0.8\linewidth]{images/tetris_pipeline_2} 
 		\includegraphics<4>[width=0.8\linewidth]{images/tetris_pipeline_3} 
 		\includegraphics<5>[width=0.8\linewidth]{images/tetris_pipeline_4} 
-		\caption*{Процесс принятия решения о планировании}
+		\caption*{Работа \texttt{Tetris}. Коэффициент справедливости f.}
 	\end{figure}
 
 
 \end{frame}
 
-\subsection{Кластер для экспериментов на честность}
+\subsection{Набор серверов}
 
 \begin{frame}[fragile]
 	\frametitle{\insertsection} 
@@ -705,6 +829,46 @@ pub trait Scheduler {
 
 \end{frame}
 
+\subsection{Конфигурация пользователей}
+
+\begin{frame}[fragile]
+	\frametitle{\insertsection} 
+	\framesubtitle{\insertsubsection}
+
+	\vspace{0.5cm}
+	
+	\begin{table}[H]
+		\footnotesize
+		\centering
+		\begin{tabular}{|c|c|c|c|c|c|}
+			\hline
+			\textbf{Имя} & \textbf{CPU} & \textbf{RAM} & \textbf{Кол-во задач} & \textbf{Duration Mean} & \textbf{Duration Dev} \\
+			\hline
+			user0 & 1 & 5 & 1500 & 250 & 40 \\
+			\hline
+			user1 & 1 & 10 & 800 & 400 & 40 \\
+			\hline
+			user2 & 1 & 15 & 800 & 300 & 30 \\
+			\hline
+			user3 & 2 & 5 & 1300 & 250 & 30 \\
+			\hline
+			user4 & 2 & 6 & 1200 & 250 & 30 \\
+			\hline
+			user5 & 2 & 7 & 800 & 300 & 40 \\
+			\hline
+			user6 & 5 & 4 & 1000 & 180 & 30 \\
+			\hline
+			user7 & 5 & 5 & 700 & 160 & 10 \\
+			\hline
+			user8 & 7 & 5 & 200 & 800 & 200 \\
+			\hline
+			user9 & 10 & 2 & 400 & 220 & 30 \\
+			\hline
+		\end{tabular}
+		\caption*{Описание синтетической нагрузки на кластер}
+	\end{table}
+
+\end{frame}
 
 \subsection{Результаты утилизации}
 
@@ -738,7 +902,7 @@ pub trait Scheduler {
 
 
 
-\subsection{Результаты честности}
+\subsection{Результаты справедливости}
 
 \begin{frame}[fragile]
 	\frametitle{\insertsection} 
@@ -847,13 +1011,12 @@ pub trait Scheduler {
 	\begin{frame}{\textbf{Вопросы}}
 	
 		\begin{enumerate}
-			\item \hyperlink{batsim-compare}{\nameref{batsim-compare}}
-			\item Входные профили нагрузки через yaml-файл 
-			\item Профили по умолчанию 
+			% \item \hyperlink{batsim-compare}{\nameref{batsim-compare}}
+			\item \hyperlink{drf-fairness}{\nameref{drf-fairness}}
+			\item Профили нагрузки по умолчанию 
 			\item Выходные данные и monitoring 
-			\item Ускорение async-dslab-core в 2 раза
-			\item Модель мгновенной честной доли с отменой задач 
-			\item Дискретно-событийное моделирование 
+			\item Ускорение async-dslab-core в 2 раза 
+			\item \hyperlink{dsmodeling}{\nameref{dsmodeling}} 
 		\end{enumerate}
 	\end{frame}
 
@@ -897,5 +1060,81 @@ pub trait Scheduler {
 		\end{jsoncode}
 	\end{figure}
 	\end{frame}
+
+
+
+\subsection{Алгоритмы справедливости. \texttt{DRF} \& \texttt{Tetris}}\label{drf-fairness}
+
+
+\begin{frame}[fragile]
+	\frametitle{\insertsection} 
+	\framesubtitle{\insertsubsection}
+
+	\begin{columns}[t] 
+		\begin{column}{0.7\linewidth}
+			\begin{figure}[H]
+			\centering 
+			\includegraphics<1>[width=\linewidth]{images/drf_1}
+			\includegraphics<2->[width=\linewidth]{images/drf_2}
+			\caption*{Потребление ресурсов пользователями}
+			\end{figure}			
+		\end{column}
+		\hspace{-1cm}
+		\begin{column}{0.35\linewidth}
+			\alt<2->{
+				\vspace{0.6cm}
+
+			Dominant shares:
+			\begin{itemize}
+				\item USER1 = $1/10$
+				\item USER2 = $1/5$
+				\item<3-> USER1 первый получит ресурсы
+			\end{itemize}
+			}{}
+		\end{column}
+	\end{columns}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{\insertsection}
+\framesubtitle{\insertsubsection}
+
+Метрика <<упаковки>>: $H_{angle} = 1 - \cos(\measuredangle(Task_{res}, Server_{res}) )$
+
+\alt<2->{
+\begin{figure}
+	\centering 
+	\includegraphics[width=0.8\linewidth]{images/tetris_match}
+	\caption*{Пример работы алгоритма \texttt{Tetris}}
+\end{figure}
+}{}
+
+\end{frame}
+
+\subsection{Как устроено дискретно-событийное моделирование}\label{dsmodeling}
+\begin{frame}
+    \frametitle{\insertsection} 
+	\framesubtitle{\insertsubsection}
+
+	\begin{figure}
+		\centering
+		{
+		\includegraphics<1>[width=\linewidth]{images/event_pipeline_0}
+		\includegraphics<2>[width=\linewidth]{images/event_pipeline_1}
+		\includegraphics<3>[width=\linewidth]{images/event_pipeline_2}
+		\includegraphics<4>[width=\linewidth]{images/event_pipeline_3}
+		\includegraphics<5>[width=\linewidth]{images/event_pipeline_4}
+		\includegraphics<6>[width=\linewidth]{images/event_pipeline_5}
+		\includegraphics<7>[width=\linewidth]{images/event_pipeline_6}
+		\includegraphics<8>[width=\linewidth]{images/event_pipeline_7}
+		\includegraphics<9>[width=\linewidth]{images/event_pipeline_8}
+		\includegraphics<10>[width=\linewidth]{images/event_pipeline_9}
+		}
+		\caption*{Исполнение симуляции}
+	\end{figure}
+    \end{frame}
+
 
 \end{document}
