@@ -54,6 +54,7 @@
 \usepackage{array,tabularx,tabulary,booktabs} % Дополнительная работа с таблицами
 \usepackage{longtable}  % Длинные таблицы
 \usepackage{multirow} % Слияние строк в таблице
+\usepackage{makecell}
 
 %%% Программирование
 \usepackage{etoolbox} % логические операторы
@@ -782,10 +783,11 @@ complex_execution_profile:
 	\hspace{-1cm}
 	\begin{column}{0.5\linewidth}
 		\begin{itemize}
-			\item На трейсе длиной 2.5 дня (350 млн задач, 25GB) время работы 45 минут
-			\item Ускорение в 85 раз относительно реальной работы. 
-			\item Необходимо сортировать трейс по времени.
-			\item Без инкрементального чтения невозможно обработать трейс.
+			\item<1-> На трейсе длиной 2.5 дня (350 млн задач, 25GB) время работы 45 минут
+			\item<1-> Ускорение в 85 раз относительно реальной работы. 
+			\item<2-> Без инкрементального чтения невозможно обработать трейс.
+			\item<2-> Необходимо сортировать трейс по времени.
+			\item<3-> В 10 раз быстрее \texttt{AccaSim}
 		\end{itemize}
 	\end{column}
 \end{columns}
@@ -966,11 +968,44 @@ complex_execution_profile:
 
 	\section{Заключение}
 
+	\subsection{Поддерживаемые модели и применимость в задачах}
+	\begin{frame}[fragile]
+		\frametitle{\insertsection}
+		\framesubtitle{\insertsubsection}
+
+		\visible<1->{
+		\textbf{Моделируемые задачи:}
+		\begin{enumerate}
+			\item Задача упаковки в условиях нескольких ресурсов серверов
+			\item Задача упаковки с учетом топологии сети кластера
+			\item Задача справедливого распределения ресурсов между пользователями 
+		\end{enumerate}
+		}
+		\visible<2->{
+		\textbf{Поддерживаемые структуры заданий:}
+		\begin{enumerate}
+			\item \texttt{rigid} -- фиксированные задания
+		\end{enumerate}
+		}
+		\visible<3->{
+		\textbf{Поддерживаемые модели планирования:}
+		\begin{enumerate}
+			\item Раздельное планирование (например, \texttt{MapReduce})
+			\item Комплектное планирование (Gang Scheduling)
+		\end{enumerate}
+		}
+
+
+	\end{frame}
+
+
+	\subsection{Результаты}
+
 	\begin{frame}[fragile]
 		\frametitle{\insertsection} 
 		\framesubtitle{\insertsubsection}
 		\small
-		\vspace{-0.5cm}
+		% \vspace{-0.5cm}
 		\hspace*{-0.5cm}
 		\begin{minipage}{1.1\linewidth}
 			{\centering
@@ -986,7 +1021,7 @@ complex_execution_profile:
 			}
 			\vspace{0.2cm}
 			\alt<7->{
-		\textbf{Главное достижение:} предоставить возможность описывать рабочую нагрузку в виде асинхронных примитивов языка \texttt{Rust}.
+		\textbf{Главное достижение:} предоставить возможность исключительно гибко описывать рабочую нагрузку, в том числе в виде асинхронных примитивов языка \texttt{Rust}.
 			}{}
 			
 	\end{minipage}
@@ -1013,54 +1048,95 @@ complex_execution_profile:
 		\begin{enumerate}
 			% \item \hyperlink{batsim-compare}{\nameref{batsim-compare}}
 			\item \hyperlink{drf-fairness}{\nameref{drf-fairness}}
-			\item Профили нагрузки по умолчанию 
-			\item Выходные данные и monitoring 
-			\item Ускорение async-dslab-core в 2 раза 
+			\item \hyperlink{default-profiles}{\nameref{default-profiles}} 
+			\item \hyperlink{output-monitoring}{\nameref{output-monitoring}}
+			\item \hyperlink{async-speedup}{\nameref{async-speedup}}
 			\item \hyperlink{dsmodeling}{\nameref{dsmodeling}} 
 		\end{enumerate}
 	\end{frame}
 
-	\subsection{\texttt{Сравнение с симулятором \texttt{BatSim}}}\label{batsim-compare}
+	\subsection{Профили нагрузки по умолчанию}\label{default-profiles}
+\begin{frame}[fragile]
+	\frametitle{\insertsection}
+	\framesubtitle{\insertsubsection}
 
-	\begin{frame}[fragile]
-		\frametitle{\insertsection} 
-		\framesubtitle{\insertsubsection}
-		\vspace{1cm}	
-		\begin{itemize}
-			\item Разработан на базе фреймворка \texttt{SimGrid}.
-			\item Поддерживает \texttt{SWF} и пользовательские профили нагрузки через JSON-файл.
-			\item Алгоритмы планирования подключаются к симулятору через IPC (inter-process-communication).
-		\end{itemize}
-		\end{frame}
+\begin{table}[H]
+	\fontsize{9}{13}\selectfont
+    \centering
+    \begin{tabular}{|l|l|}
+        \hline
+        \textbf{Профиль} & \textbf{Аргументы} \\ 
+        \hline
+        compute-homogenous & \texttt{compute\_work: f64}  \\
+        \hline
+        compute-vector &  \texttt{compute\_work: Vec<f64>}  \\
+        \hline
+        communication-homogenous & \texttt{size: f64}  \\
+        \hline 
+        communication-matrix &  \texttt{matrix: Vec<Vec<f64>>}  \\
+        \hline
+        communication-src-dst & \makecell[tl]{
+              \texttt{src: Vec<usize>} \\ \texttt{dst: Vec<usize>} \\ \texttt{size: f64} } \\
+        \hline
+        communication-external & \makecell[tl]{
+             \texttt{processes: Vec<usize>}\\ \texttt{input\_size: f64}\\ \texttt{output\_size: f64}\\ \texttt{component\_name: String}} \\ 
+            \hline
+        disk-read & \makecell[tl]{ \texttt{processes: Vec<usize>}\\ \texttt{size: f64}} \\ 
+        \hline
+        disk-write & \makecell[tl]{\texttt{processes: Vec<usize>}\\\texttt{size: f64}} \\
+        \hline
+    \end{tabular}
+    \caption*{Профили нагрузки по умолчанию}
+\end{table}
 
+\end{frame}
 
-	\subsection{\texttt{Профиль нагрузки в BatSim}}
-	\begin{frame}[fragile]
-		\frametitle{\insertsection} 
-		\framesubtitle{\insertsubsection}
-		\begin{figure}
-			\scriptsize
-		\begin{jsoncode}
-"jobs": [
-  {"id": "job1",  ...  "res": 4, "profile": "sequence"},
-],
+\subsection{Выходные данные симулятора и мониторинг}\label{output-monitoring}
+\begin{frame}[fragile]
+	\frametitle{\insertsection}
+	\framesubtitle{\insertsubsection}
+	Собирается статистика по:
+	\begin{itemize}
+		\item Усредненной на промежутке времени загрузке каждого ресурса в серверах кластера (время сжатия задается через конфигурационный файл)
+		\item Доминантной доли каждого пользователя в кластере 
+		\item Размеру очереди задач по приоритетам и пользователям
+	\end{itemize}
+\end{frame}
 
-"profiles": {
-  "homogeneous": {
-    "type": "parallel_homogeneous",
-    "cpu": 10e6,
-    "com": 1e6
-  },
-  "sequence": {
-    "type": "composed",
-    "repeat" : 4,
-    "seq": ["simple","homogeneous","simple"]
-  },
-}
-		\end{jsoncode}
-	\end{figure}
-	\end{frame}
+\subsection{Ускорение \texttt{async-dslab-core} в 2 раза}\label{async-speedup}
+\begin{frame}[fragile]
+	\frametitle{\insertsection}
+	\framesubtitle{\insertsubsection}
 
+	\begin{columns}
+		\begin{column}{1.1\linewidth}
+	\vspace{0.5cm}
+	\begin{table}[H]
+		\centering
+		\fontsize{9}{14}\selectfont
+		\begin{tabular}{|c|c|c|c|c|c|}
+			\hline
+			\textbf{Proc} & \textbf{Peers} & \textbf{Iters} & \multicolumn{3}{c|}{\textbf{Время работы, сек (млн. событий/сек)}}  \\ 
+			\cline{4-6} 
+			& & & \hspace{0.2cm}\textbf{Прошлая вер.}\hspace{0.2cm} & \textbf{Актуальная вер.} & \textbf{Classic}    \\
+			\hline 
+			2 & 1 & $10^7$ & 6.28 (6.3)& 3.15 (12.5) & 1.4 (29.9) \\ 
+			\hline 
+			2 & 1 & $10^8$ & 61.8 (6.4)& 32.3 (12.4) & 13.2 (30.0)\\
+			\hline 
+			$10^3$ & 10 & 1000 & 0.39 (5.1) & 0.25 (8.2) & 0.16 (12.4)\\
+			\hline
+			$10^4$ & 100 & 1000 & 4.46 (4.5) & 3.02 (6.6) & 2.04 (9.8)\\ 
+			\hline
+			$10^5$ & 100 & 1000 & 65.37 (3.0)& 48.42 (4.1) & 28.29(7.07) \\
+			\hline
+		\end{tabular}
+		\caption*{Сравнение асинхронного и классического ядра на примере \texttt{Ping-Pong}}
+	\end{table}
+\end{column} 
+\end{columns}
+
+\end{frame}
 
 
 \subsection{Алгоритмы справедливости. \texttt{DRF} \& \texttt{Tetris}}\label{drf-fairness}
